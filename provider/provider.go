@@ -56,8 +56,8 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"tpmsync_password": resourcePassword(),
-			"tpmsync_project":  resourceProject(),
+			"teampasswordmanager_password": resourcePassword(),
+			"teampasswordmanager_project":  resourceProject(),
 		},
 		DataSourcesMap:       map[string]*schema.Resource{},
 		ConfigureContextFunc: providerConfigure,

@@ -9,9 +9,9 @@ test-unit:
 	go test --race ./...
 
 build-tf:
-	go build -o terraform-provider-tpmsync
-	mkdir -p ~/.terraform.d/plugins/hashicorp.com/edu/tpmsync/0.2/linux_amd64
-	mv terraform-provider-tpmsync ~/.terraform.d/plugins/hashicorp.com/edu/tpmsync/0.2/linux_amd64/
+	go build -o terraform-provider-teampasswordmanager
+	mkdir -p ~/.terraform.d/plugins/hashicorp.com/edu/teampasswordmanager/0.2/linux_amd64
+	mv terraform-provider-teampasswordmanager ~/.terraform.d/plugins/hashicorp.com/edu/teampasswordmanager/0.2/linux_amd64/
 
 tf-run: build-tf
 	cd ./examples/ && rm -rf .terraform* && terraform init && terraform apply --auto-approve

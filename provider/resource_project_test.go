@@ -19,49 +19,49 @@ func TestAccTPMProjectBasic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-			                 resource "tpmsync_project" "new" {
+			                 resource "teampasswordmanager_project" "new" {
 			                     name = "new_project"
 			                 }
 			             `,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("tpmsync_project.new", "name", "new_project"),
-					resource.TestCheckNoResourceAttr("tpmsync_project.new", "notes"),
-					resource.TestCheckNoResourceAttr("tpmsync_project.new", "tags.#"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "parent_id", "0"),
-					testAccCheckTPMProjectExists("tpmsync_project.new"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "name", "new_project"),
+					resource.TestCheckNoResourceAttr("teampasswordmanager_project.new", "notes"),
+					resource.TestCheckNoResourceAttr("teampasswordmanager_project.new", "tags.#"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "parent_id", "0"),
+					testAccCheckTPMProjectExists("teampasswordmanager_project.new"),
 				),
 			},
 			{
 				Config: `
-			                 resource "tpmsync_project" "new" {
+			                 resource "teampasswordmanager_project" "new" {
 			                     name = "updated_project"
 			                     notes = "this is a small note"
 			                     tags = ["a","b","c"]
 			                 }
 			             `,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("tpmsync_project.new", "name", "updated_project"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "notes", "this is a small note"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "tags.#", "3"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "tags.0", "a"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "tags.1", "b"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "tags.2", "c"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "parent_id", "0"),
-					testAccCheckTPMProjectExists("tpmsync_project.new"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "name", "updated_project"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "notes", "this is a small note"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "tags.#", "3"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "tags.0", "a"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "tags.1", "b"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "tags.2", "c"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "parent_id", "0"),
+					testAccCheckTPMProjectExists("teampasswordmanager_project.new"),
 				),
 			},
 			{
 				Config: `
-			                 resource "tpmsync_project" "new" {
+			                 resource "teampasswordmanager_project" "new" {
 			                     name = "updated_project_again"
 			                 }
 			             `,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("tpmsync_project.new", "name", "updated_project_again"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "notes", ""),
-					resource.TestCheckNoResourceAttr("tpmsync_project.new", "tags.#"),
-					resource.TestCheckResourceAttr("tpmsync_project.new", "parent_id", "0"),
-					testAccCheckTPMProjectExists("tpmsync_project.new"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "name", "updated_project_again"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "notes", ""),
+					resource.TestCheckNoResourceAttr("teampasswordmanager_project.new", "tags.#"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "parent_id", "0"),
+					testAccCheckTPMProjectExists("teampasswordmanager_project.new"),
 				),
 			},
 		},
@@ -104,7 +104,7 @@ func testAccCheckTPMProjectDestroy(s *terraform.State) error {
 	c := getProjectClient(testAccProvider.Meta())
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "tpmsync_project" {
+		if rs.Type != "teampasswordmanager_project" {
 			continue
 		}
 

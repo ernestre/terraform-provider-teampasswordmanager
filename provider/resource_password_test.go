@@ -19,36 +19,36 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: `
-                    resource "tpmsync_project" "my_project" {
+                    resource "teampasswordmanager_project" "my_project" {
                         name = "test_project"
                     }
-                    resource "tpmsync_password" "new" {
+                    resource "teampasswordmanager_password" "new" {
                         name = "new_password"
-                        project_id = tpmsync_project.my_project.id
+                        project_id = teampasswordmanager_project.my_project.id
                         password = "secure_password"
                     }
                 `,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("tpmsync_password.new", "name", "new_password"),
-					resource.TestCheckResourceAttr("tpmsync_password.new", "password", "secure_password"),
-					testAccCheckTPMPasswordExists("tpmsync_password.new", "tpmsync_project.my_project"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "name", "new_password"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "password", "secure_password"),
+					testAccCheckTPMPasswordExists("teampasswordmanager_password.new", "teampasswordmanager_project.my_project"),
 				),
 			},
 			{
 				Config: `
-                    resource "tpmsync_project" "my_project" {
+                    resource "teampasswordmanager_project" "my_project" {
                         name = "test_project"
                     }
-                    resource "tpmsync_password" "new" {
+                    resource "teampasswordmanager_password" "new" {
                         name = "the_new_old_passwowrd"
-                        project_id = tpmsync_project.my_project.id
+                        project_id = teampasswordmanager_project.my_project.id
                         password = "foobar"
                     }
                 `,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("tpmsync_password.new", "name", "the_new_old_passwowrd"),
-					resource.TestCheckResourceAttr("tpmsync_password.new", "password", "foobar"),
-					testAccCheckTPMPasswordExists("tpmsync_password.new", "tpmsync_project.my_project"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "name", "the_new_old_passwowrd"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "password", "foobar"),
+					testAccCheckTPMPasswordExists("teampasswordmanager_password.new", "teampasswordmanager_project.my_project"),
 				),
 			},
 		},
@@ -122,7 +122,7 @@ func testAccCheckTPMPasswordDestroy(s *terraform.State) error {
 	c := testAccProvider.Meta().(clientRegistry)[client_password].(tpm.PasswordClient)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "tpmsync_password" {
+		if rs.Type != "teampasswordmanager_password" {
 			continue
 		}
 

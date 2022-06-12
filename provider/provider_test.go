@@ -15,7 +15,7 @@ var (
 func init() {
 	testAccProvider = Provider()
 	testAccProviders = map[string]*schema.Provider{
-		"tpmsync": testAccProvider,
+		"teampasswordmanager": testAccProvider,
 	}
 }
 
