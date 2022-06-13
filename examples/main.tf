@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     teampasswordmanager = {
-      version = "0.2.0"
-      source  = "hashicorp.com/edu/teampasswordmanager"
+      source  = "ernestre/teampasswordmanager"
+      version = "0.1.2"
     }
   }
 }
