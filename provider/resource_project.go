@@ -134,7 +134,7 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 	var diags diag.Diagnostics
 	c := getProjectClient(m)
 
-	projectID, err := strconv.Atoi(d.Id())
+	projectID, err := strconv.Atoi(d.Get("id").(string))
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -144,15 +144,17 @@ func resourceProjectRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 
-	if err = d.Set("id", d.Id()); err != nil {
-		return diag.FromErr(err)
-	}
+	d.SetId(strconv.Itoa(projectID))
 
 	if err = d.Set("name", projectData.Name); err != nil {
 		return diag.FromErr(err)
 	}
 
 	if err = d.Set("parent_id", projectData.ParentID); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err = d.Set("notes", projectData.Notes); err != nil {
 		return diag.FromErr(err)
 	}
 

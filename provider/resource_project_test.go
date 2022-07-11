@@ -21,11 +21,12 @@ func TestAccTPMProjectBasic(t *testing.T) {
 				Config: `
 			                 resource "teampasswordmanager_project" "new" {
 			                     name = "new_project"
+			                     notes = "this is a small note"
 			                 }
 			             `,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "name", "new_project"),
-					resource.TestCheckNoResourceAttr("teampasswordmanager_project.new", "notes"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "notes", "this is a small note"),
 					resource.TestCheckNoResourceAttr("teampasswordmanager_project.new", "tags.#"),
 					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "parent_id", "0"),
 					testAccCheckTPMProjectExists("teampasswordmanager_project.new"),
@@ -35,13 +36,13 @@ func TestAccTPMProjectBasic(t *testing.T) {
 				Config: `
 			                 resource "teampasswordmanager_project" "new" {
 			                     name = "updated_project"
-			                     notes = "this is a small note"
+			                     notes = "this is a smaller note"
 			                     tags = ["a","b","c"]
 			                 }
 			             `,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "name", "updated_project"),
-					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "notes", "this is a small note"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "notes", "this is a smaller note"),
 					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "tags.#", "3"),
 					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "tags.0", "a"),
 					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "tags.1", "b"),
