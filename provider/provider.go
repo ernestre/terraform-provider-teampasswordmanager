@@ -59,7 +59,9 @@ func Provider() *schema.Provider {
 			"teampasswordmanager_password": resourcePassword(),
 			"teampasswordmanager_project":  resourceProject(),
 		},
-		DataSourcesMap:       map[string]*schema.Resource{},
+		DataSourcesMap: map[string]*schema.Resource{
+			"teampasswordmanager_password": dataSourcePassword(),
+		},
 		ConfigureContextFunc: providerConfigure,
 	}
 }

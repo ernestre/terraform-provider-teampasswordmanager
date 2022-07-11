@@ -107,7 +107,7 @@ func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interfa
 	var diags diag.Diagnostics
 	c := getPasswordClient(m)
 
-	passwordID, err := strconv.Atoi(d.Id())
+	passwordID, err := strconv.Atoi(d.Get("id").(string))
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -117,9 +117,7 @@ func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 
-	if err = d.Set("id", strconv.Itoa(passwordData.ID)); err != nil {
-		return diag.FromErr(err)
-	}
+	d.SetId(strconv.Itoa(passwordID))
 
 	if err = d.Set("name", passwordData.Name); err != nil {
 		return diag.FromErr(err)
