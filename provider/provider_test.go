@@ -26,13 +26,13 @@ func TestProvider(t *testing.T) {
 }
 
 func testAccPreCheck(t *testing.T) {
-	if err := os.Getenv(env_config_host); err == "" {
-		t.Fatalf("%s must be set for acceptance tests", env_config_host)
+	if err := os.Getenv(envConfigHost); err == "" {
+		t.Fatalf("%s must be set for acceptance tests", envConfigHost)
 	}
-	if err := os.Getenv(env_config_public_key); err == "" {
-		t.Fatalf("%s must be set for acceptance tests", config_public_key)
+	if err := os.Getenv(envConfigPublicKey); err == "" {
+		t.Fatalf("%s must be set for acceptance tests", configPublicKey)
 	}
-	if err := os.Getenv(env_config_private_key); err == "" {
-		t.Fatalf("%s must be set for acceptance tests", config_private_key)
+	if err := os.Getenv(envConfigPrivateKey); err == "" {
+		t.Fatalf("%s must be set for acceptance tests", configPrivateKey)
 	}
 }

@@ -9,49 +9,49 @@ import (
 )
 
 const (
-	config_host        = "host"
-	config_public_key  = "public_key"
-	config_private_key = "private_key"
+	configHost       = "host"
+	configPublicKey  = "public_key"
+	configPrivateKey = "private_key"
 
-	env_config_host        = "TPM_HOST"
-	env_config_public_key  = "TPM_PUBLIC_KEY"
-	env_config_private_key = "TPM_PRIVATE_KEY"
+	envConfigHost       = "TPM_HOST"
+	envConfigPublicKey  = "TPM_PUBLIC_KEY"
+	envConfigPrivateKey = "TPM_PRIVATE_KEY"
 
-	client_password = "password_client"
-	client_project  = "password_project"
+	clientPassword = "password_client"
+	clientProject  = "password_project"
 )
 
 type clientRegistry map[string]interface{}
 
 func getProjectClient(m interface{}) tpm.ProjectClient {
-	return m.(clientRegistry)[client_project].(tpm.ProjectClient)
+	return m.(clientRegistry)[clientProject].(tpm.ProjectClient)
 }
 
 func getPasswordClient(m interface{}) tpm.PasswordClient {
-	return m.(clientRegistry)[client_password].(tpm.PasswordClient)
+	return m.(clientRegistry)[clientPassword].(tpm.PasswordClient)
 }
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			config_host: {
+			configHost: {
 				Type:        schema.TypeString,
 				Required:    true,
-				DefaultFunc: schema.EnvDefaultFunc(env_config_host, nil),
+				DefaultFunc: schema.EnvDefaultFunc(envConfigHost, nil),
 				Description: "Host of the team password manager. (ie: http://localhost:8081)",
 			},
-			config_public_key: {
+			configPublicKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Sensitive:   true,
-				DefaultFunc: schema.EnvDefaultFunc(env_config_public_key, nil),
+				DefaultFunc: schema.EnvDefaultFunc(envConfigPublicKey, nil),
 				Description: "Public key from http://{ host }/index.php/user_info/api_keys",
 			},
-			config_private_key: {
+			configPrivateKey: {
 				Type:        schema.TypeString,
 				Required:    true,
 				Sensitive:   true,
-				DefaultFunc: schema.EnvDefaultFunc(env_config_private_key, nil),
+				DefaultFunc: schema.EnvDefaultFunc(envConfigPrivateKey, nil),
 				Description: "Private key from http://{ host }/index.php/user_info/api_keys",
 			},
 		},
@@ -68,9 +68,9 @@ func Provider() *schema.Provider {
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	host := d.Get(config_host).(string)
-	public_key := d.Get(config_public_key).(string)
-	private_key := d.Get(config_private_key).(string)
+	host := d.Get(configHost).(string)
+	public_key := d.Get(configPublicKey).(string)
+	private_key := d.Get(configPrivateKey).(string)
 
 	if host == "" {
 		return nil, diag.Errorf("host cannot be empty")
@@ -93,8 +93,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	clients := clientRegistry{}
-	clients[client_password] = tpm.NewPasswordClient(config)
-	clients[client_project] = tpm.NewProjectClient(config)
+	clients[clientPassword] = tpm.NewPasswordClient(config)
+	clients[clientProject] = tpm.NewProjectClient(config)
 
 	return clients, diags
 }
