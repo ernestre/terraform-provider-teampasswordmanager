@@ -119,7 +119,7 @@ func testAccCheckTPMPasswordExists(passwordResourceName string, projectResourceN
 }
 
 func testAccCheckTPMPasswordDestroy(s *terraform.State) error {
-	c := testAccProvider.Meta().(clientRegistry)[client_password].(tpm.PasswordClient)
+	c := testAccProvider.Meta().(clientRegistry)[clientPassword].(tpm.PasswordClient)
 
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "teampasswordmanager_password" {

@@ -6,7 +6,6 @@ services:
     image: teampasswordmanager/teampasswordmanager:latest
     depends_on:
       - mysql
-    restart: always
     ports:
       - "8081:80"
     volumes:
@@ -26,7 +25,6 @@ services:
 
   mysql:
     image: mysql:5.7
-    restart: always
     ports:
       - "13306:3306"
     volumes:
