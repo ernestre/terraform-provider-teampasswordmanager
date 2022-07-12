@@ -17,4 +17,7 @@ resource "teampasswordmanager_password" "sendgrid" {
   name       = "sendgrid"
   password   = "az4Oowis"
   project_id = teampasswordmanager_project.new.id
+
+  custom_field_1 = "Admin user"
+  custom_field_2 = "Marketing"
 }
