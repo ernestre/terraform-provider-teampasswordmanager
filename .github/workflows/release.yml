@@ -33,7 +33,7 @@ jobs:
       -
         name: Import GPG key
         id: import_gpg
-        uses: ./.github/actions/import-gpg.yaml
+        uses: ./.github/actions/import-gpg
         env:
           # These secrets will need to be configured for the repository:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
