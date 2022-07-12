@@ -52,6 +52,16 @@ data "teampasswordmanager_password" "sendgrid" {
 
 ### Read-Only
 
+- `custom_field_1` (String) Custom field 1
+- `custom_field_10` (String) Custom field 10
+- `custom_field_2` (String) Custom field 2
+- `custom_field_3` (String) Custom field 3
+- `custom_field_4` (String) Custom field 4
+- `custom_field_5` (String) Custom field 5
+- `custom_field_6` (String) Custom field 6
+- `custom_field_7` (String) Custom field 7
+- `custom_field_8` (String) Custom field 8
+- `custom_field_9` (String) Custom field 9
 - `name` (String) Name of the password, usually used for seaching.
 - `password` (String, Sensitive) Password value.
 - `project_id` (Number) Project ID of the project where password should be created.
