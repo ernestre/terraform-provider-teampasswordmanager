@@ -18,11 +18,11 @@ func NewProjectClient(c Config) ProjectClient {
 }
 
 func (c ProjectClient) getProjectsEndpoint() string {
-	return fmt.Sprintf("api/%s/projects.json", c.client.apiVersion)
+	return fmt.Sprintf("api/%s/projects.json", c.client.config.ApiVersion)
 }
 
 func (c ProjectClient) getSpecificProjectEndpoint(ID int) string {
-	return fmt.Sprintf("api/%s/projects/%d.json", c.client.apiVersion, ID)
+	return fmt.Sprintf("api/%s/projects/%d.json", c.client.config.ApiVersion, ID)
 }
 
 func (c ProjectClient) generateURL(p string) string {

@@ -15,6 +15,7 @@ var testConfig = Config{
 	Host:       "host",
 	PublicKey:  "publicKey",
 	PrivateKey: "privateKey",
+	ApiVersion: "v5",
 }
 
 func TestNewClient(t *testing.T) {
@@ -22,15 +23,18 @@ func TestNewClient(t *testing.T) {
 		Host:       "host",
 		PublicKey:  "publicKey",
 		PrivateKey: "privateKey",
+		ApiVersion: "v4",
 	}
+
+	expectedVersion := "v4"
 
 	client := NewClient(c)
 
-	if client.apiVersion != api_version {
+	if client.config.ApiVersion != expectedVersion {
 		t.Errorf(
 			"client has invalid api version. Expected %s, got %s",
-			api_version,
-			client.apiVersion,
+			expectedVersion,
+			client.config.ApiVersion,
 		)
 	}
 

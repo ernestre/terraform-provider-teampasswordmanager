@@ -192,3 +192,48 @@ func TestTagsUnMarshaling(t *testing.T) {
 		})
 	}
 }
+
+func TestProjectClient_GetEndpoints(t *testing.T) {
+	client := NewProjectClient(testConfig)
+
+	tests := []struct {
+		name         string
+		expectedURL  string
+		generateFunc func() string
+	}{
+		{
+			name:        "getProjectsEndpoint",
+			expectedURL: "api/v5/projects.json",
+			generateFunc: func() string {
+				return client.getProjectsEndpoint()
+			},
+		},
+		{
+			name:        "getSpecificProjectEndpoint",
+			expectedURL: "api/v5/projects/100.json",
+			generateFunc: func() string {
+				return client.getSpecificProjectEndpoint(100)
+			},
+		},
+		{
+			name:        "generateURL",
+			expectedURL: "host/index.php/foo",
+			generateFunc: func() string {
+				return client.generateURL("foo")
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			generatedURL := test.generateFunc()
+			if generatedURL != test.expectedURL {
+				t.Errorf(
+					"Generated URL does not match expected URL. Expected %s, got %s",
+					test.expectedURL,
+					generatedURL,
+				)
+			}
+		})
+	}
+}
