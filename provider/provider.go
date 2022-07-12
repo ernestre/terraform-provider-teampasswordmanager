@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ernestre/terraform-provider-teampasswordmanager/tpm"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -12,6 +13,7 @@ const (
 	configHost       = "host"
 	configPublicKey  = "public_key"
 	configPrivateKey = "private_key"
+	configAPIVersion = "api_version"
 
 	envConfigHost       = "TPM_HOST"
 	envConfigPublicKey  = "TPM_PUBLIC_KEY"
@@ -54,6 +56,16 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc(envConfigPrivateKey, nil),
 				Description: "Private key from http://{ host }/index.php/user_info/api_keys",
 			},
+			configAPIVersion: {
+				Type:       schema.TypeString,
+				Optional:   true,
+				Deprecated: "This attribute was added only for v4 support and will be removed in the future releases. Please upgrade your TeamPasswordManager to the latest version.",
+				Default:    tpm.DefaultApiVersion,
+				Description: fmt.Sprintf(
+					"Api version to use (defaults to %s). Lower versions than v4 might not work correctly or at all. For more information https://teampasswordmanager.com/docs",
+					tpm.DefaultApiVersion,
+				),
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"teampasswordmanager_password": resourcePassword(),
@@ -69,27 +81,33 @@ func Provider() *schema.Provider {
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	host := d.Get(configHost).(string)
-	public_key := d.Get(configPublicKey).(string)
-	private_key := d.Get(configPrivateKey).(string)
+	publicKey := d.Get(configPublicKey).(string)
+	privateKey := d.Get(configPrivateKey).(string)
+	apiVersion := d.Get(configAPIVersion).(string)
 
 	if host == "" {
-		return nil, diag.Errorf("host cannot be empty")
+		return nil, diag.Errorf("%s cannot be empty", configHost)
 	}
 
-	if public_key == "" {
-		return nil, diag.Errorf("public key cannot be empty")
+	if publicKey == "" {
+		return nil, diag.Errorf("%s key cannot be empty", configPublicKey)
 	}
 
-	if private_key == "" {
-		return nil, diag.Errorf("private key cannot be empty")
+	if privateKey == "" {
+		return nil, diag.Errorf("%s key cannot be empty", configPrivateKey)
+	}
+
+	if apiVersion == "" {
+		return nil, diag.Errorf("%s key cannot be empty", configAPIVersion)
 	}
 
 	var diags diag.Diagnostics
 
 	config := tpm.Config{
 		Host:       host,
-		PublicKey:  public_key,
-		PrivateKey: private_key,
+		PublicKey:  publicKey,
+		PrivateKey: privateKey,
+		ApiVersion: apiVersion,
 	}
 
 	clients := clientRegistry{}

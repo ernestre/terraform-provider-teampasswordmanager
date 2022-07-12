@@ -30,3 +30,7 @@ provider "teampasswordmanager" {
 - `host` (String) Host of the team password manager. (ie: http://localhost:8081)
 - `private_key` (String, Sensitive) Private key from http://{ host }/index.php/user_info/api_keys
 - `public_key` (String, Sensitive) Public key from http://{ host }/index.php/user_info/api_keys
+
+### Optional
+
+- `api_version` (String, Deprecated) Api version to use (defaults to v5). Lower versions than v4 might not work correctly or at all. For more information https://teampasswordmanager.com/docs

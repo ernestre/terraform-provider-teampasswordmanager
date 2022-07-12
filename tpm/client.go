@@ -11,29 +11,31 @@ import (
 	"time"
 )
 
-const api_version = "v5"
+const DefaultApiVersion = "v5"
 
 type (
 	Config struct {
 		Host       string
 		PublicKey  string
 		PrivateKey string
+		ApiVersion string
 	}
 
 	Client struct {
 		httpClient http.Client
 		config     Config
-		apiVersion string
 	}
 )
 
 func NewClient(c Config) Client {
+	if c.ApiVersion == "" {
+		c.ApiVersion = DefaultApiVersion
+	}
 	return Client{
 		httpClient: http.Client{
 			Timeout: time.Second * 15,
 		},
-		config:     c,
-		apiVersion: api_version,
+		config: c,
 	}
 }
 

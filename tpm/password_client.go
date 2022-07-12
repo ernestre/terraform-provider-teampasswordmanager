@@ -203,25 +203,25 @@ func (c PasswordClient) generateURL(p string) string {
 }
 
 func (c PasswordClient) getProjectPasswordsEndpoint(projectID int) string {
-	return fmt.Sprintf("api/%s/projects/%d/passwords.json", c.client.apiVersion, projectID)
+	return fmt.Sprintf("api/%s/projects/%d/passwords.json", c.client.config.ApiVersion, projectID)
 }
 
 func (c PasswordClient) getPasswordsEndpoint() string {
-	return fmt.Sprintf("api/%s/passwords.json", c.client.apiVersion)
+	return fmt.Sprintf("api/%s/passwords.json", c.client.config.ApiVersion)
 }
 
 func (c PasswordClient) getPasswordByIDEndpoint(passwordID int) string {
-	return fmt.Sprintf("api/%s/passwords/%d.json", c.client.apiVersion, passwordID)
+	return fmt.Sprintf("api/%s/passwords/%d.json", c.client.config.ApiVersion, passwordID)
 }
 
 func (c PasswordClient) getUpdatePasswordEndpoint(passwordID int) string {
-	return fmt.Sprintf("api/%s/passwords/%d.json", c.client.apiVersion, passwordID)
+	return fmt.Sprintf("api/%s/passwords/%d.json", c.client.config.ApiVersion, passwordID)
 }
 
 func (c PasswordClient) getPasswordSearchEndpoint(searchString string) string {
 	return fmt.Sprintf(
 		"api/%s/passwords/search/%s.json",
-		c.client.apiVersion,
+		c.client.config.ApiVersion,
 		url.QueryEscape(searchString),
 	)
 }
