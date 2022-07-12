@@ -8,20 +8,17 @@ type (
 			Name string `json:"name,omitempty"`
 			ID   int    `json:"id,omitempty"`
 		} `json:"project,omitempty"`
-		Password     string       `json:"password,omitempty"`
-		CustomField1 *CustomField `json:"custom_field1,omitempty"`
-		CustomField2 *CustomField `json:"custom_field2,omitempty"`
-		CustomField3 *struct {
-			CustomField `json:"custom_field"`
-			OtpValue    string `json:"otp_value,omitempty"`
-		} `json:"custom_field3,omitempty"`
+		Password      string       `json:"password,omitempty"`
+		CustomField1  *CustomField `json:"custom_field1,omitempty"`
+		CustomField2  *CustomField `json:"custom_field2,omitempty"`
+		CustomField3  *CustomField `json:"custom_field3,omitempty"`
 		CustomField4  *CustomField `json:"custom_field4,omitempty"`
-		CustomField5  interface{}  `json:"custom_field5,omitempty"`
-		CustomField6  interface{}  `json:"custom_field6,omitempty"`
-		CustomField7  interface{}  `json:"custom_field7,omitempty"`
-		CustomField8  interface{}  `json:"custom_field8,omitempty"`
-		CustomField9  interface{}  `json:"custom_field9,omitempty"`
-		CustomField10 interface{}  `json:"custom_field10,omitempty"`
+		CustomField5  *CustomField `json:"custom_field5,omitempty"`
+		CustomField6  *CustomField `json:"custom_field6,omitempty"`
+		CustomField7  *CustomField `json:"custom_field7,omitempty"`
+		CustomField8  *CustomField `json:"custom_field8,omitempty"`
+		CustomField9  *CustomField `json:"custom_field9,omitempty"`
+		CustomField10 *CustomField `json:"custom_field10,omitempty"`
 	}
 
 	CustomField struct {
@@ -49,16 +46,17 @@ type (
 	CreatePasswordRequest struct {
 		Name         string `json:"name,omitempty"`
 		ProjectID    int    `json:"project_id,omitempty"`
-		Password     string `json:"password,omitempty"`
-		CustomData1  string `json:"custom_data_1,omitempty"`
-		CustomData2  string `json:"custom_data_2,omitempty"`
-		CustomData4  string `json:"custom_data_4,omitempty"`
-		CustomData5  string `json:"custom_data_5,omitempty"`
-		CustomData6  string `json:"custom_data_6,omitempty"`
-		CustomData7  string `json:"custom_data_7,omitempty"`
-		CustomData8  string `json:"custom_data_8,omitempty"`
-		CustomData9  string `json:"custom_data_9,omitempty"`
-		CustomData10 string `json:"custom_data_10,omitempty"`
+		Password     string `json:"password"`
+		CustomData1  string `json:"custom_data1"`
+		CustomData2  string `json:"custom_data2"`
+		CustomData3  string `json:"custom_data3"`
+		CustomData4  string `json:"custom_data4"`
+		CustomData5  string `json:"custom_data5"`
+		CustomData6  string `json:"custom_data6"`
+		CustomData7  string `json:"custom_data7"`
+		CustomData8  string `json:"custom_data8"`
+		CustomData9  string `json:"custom_data9"`
+		CustomData10 string `json:"custom_data10"`
 	}
 
 	CreatePasswordResponse struct {
@@ -68,14 +66,15 @@ type (
 	UpdatePasswordRequest struct {
 		Name         string `json:"name,omitempty"`
 		Password     string `json:"password,omitempty"`
-		CustomData1  string `json:"custom_data_1,omitempty"`
-		CustomData2  string `json:"custom_data_2,omitempty"`
-		CustomData4  string `json:"custom_data_4,omitempty"`
-		CustomData5  string `json:"custom_data_5,omitempty"`
-		CustomData6  string `json:"custom_data_6,omitempty"`
-		CustomData7  string `json:"custom_data_7,omitempty"`
-		CustomData8  string `json:"custom_data_8,omitempty"`
-		CustomData9  string `json:"custom_data_9,omitempty"`
-		CustomData10 string `json:"custom_data_10,omitempty"`
+		CustomData1  string `json:"custom_data1"`
+		CustomData2  string `json:"custom_data2"`
+		CustomData3  string `json:"custom_data3"`
+		CustomData4  string `json:"custom_data4"`
+		CustomData5  string `json:"custom_data5"`
+		CustomData6  string `json:"custom_data6"`
+		CustomData7  string `json:"custom_data7"`
+		CustomData8  string `json:"custom_data8"`
+		CustomData9  string `json:"custom_data9"`
+		CustomData10 string `json:"custom_data10"`
 	}
 )
