@@ -9,6 +9,7 @@ type (
 			ID   int    `json:"id,omitempty"`
 		} `json:"project,omitempty"`
 		Password      string       `json:"password,omitempty"`
+		Username      string       `json:"username,omitempty"`
 		CustomField1  *CustomField `json:"custom_field1,omitempty"`
 		CustomField2  *CustomField `json:"custom_field2,omitempty"`
 		CustomField3  *CustomField `json:"custom_field3,omitempty"`
@@ -47,6 +48,7 @@ type (
 		Name         string `json:"name,omitempty"`
 		ProjectID    int    `json:"project_id,omitempty"`
 		Password     string `json:"password"`
+		Username     string `json:"username"`
 		CustomData1  string `json:"custom_data1"`
 		CustomData2  string `json:"custom_data2"`
 		CustomData3  string `json:"custom_data3"`
@@ -66,6 +68,7 @@ type (
 	UpdatePasswordRequest struct {
 		Name         string `json:"name,omitempty"`
 		Password     string `json:"password,omitempty"`
+		Username     string `json:"username,"`
 		CustomData1  string `json:"custom_data1"`
 		CustomData2  string `json:"custom_data2"`
 		CustomData3  string `json:"custom_data3"`

@@ -24,12 +24,14 @@ resource "teampasswordmanager_project" "new" {
 
 resource "teampasswordmanager_password" "database" {
   name       = "database"
+  username   = "root"
   password   = "feechu0W"
   project_id = teampasswordmanager_project.new.id
 }
 
 resource "teampasswordmanager_password" "sendgrid" {
   name       = "sendgrid"
+  username   = "admin"
   password   = "az4Oowis"
   project_id = teampasswordmanager_project.new.id
 
@@ -60,5 +62,6 @@ resource "teampasswordmanager_password" "sendgrid" {
 - `custom_field_8` (String) Custom field 8
 - `custom_field_9` (String) Custom field 9
 - `id` (String) Password ID.
+- `username` (String, Sensitive) Username value.
 
 

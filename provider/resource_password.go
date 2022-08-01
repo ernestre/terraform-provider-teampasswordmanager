@@ -30,6 +30,12 @@ func resourcePassword() *schema.Resource {
 			Required:    true,
 			Description: "Project ID of the project where password should be created.",
 		},
+		"username": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Sensitive:   true,
+			Description: "Username value.",
+		},
 		"password": {
 			Type:        schema.TypeString,
 			Required:    true,
@@ -67,6 +73,7 @@ func resourcePasswordCreate(ctx context.Context, d *schema.ResourceData, m inter
 		Name:         d.Get("name").(string),
 		ProjectID:    d.Get("project_id").(int),
 		Password:     d.Get("password").(string),
+		Username:     d.Get("username").(string),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -116,6 +123,7 @@ func resourcePasswordUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	r := tpm.UpdatePasswordRequest{
 		Name:         d.Get("name").(string),
 		Password:     d.Get("password").(string),
+		Username:     d.Get("username").(string),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -172,6 +180,10 @@ func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	if err = d.Set("password", passwordData.Password); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err = d.Set("username", passwordData.Username); err != nil {
 		return diag.FromErr(err)
 	}
 

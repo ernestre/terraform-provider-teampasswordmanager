@@ -23,6 +23,12 @@ func dataSourcePassword() *schema.Resource {
 			Computed:    true,
 			Description: "Project ID of the project where password should be created.",
 		},
+		"username": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Sensitive:   true,
+			Description: "Username value.",
+		},
 		"password": {
 			Type:        schema.TypeString,
 			Computed:    true,

@@ -26,6 +26,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
                         name = "new_password"
                         project_id = teampasswordmanager_project.my_project.id
                         password = "secure_password"
+                        username = "secret_username"
 
                         custom_field_1 = "custom data 1"
                         custom_field_2 = "custom data 2"
@@ -42,6 +43,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "name", "new_password"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "password", "secure_password"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", "secret_username"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", "custom data 1"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", "custom data 2"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", "custom data 3"),
@@ -69,6 +71,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "name", "the_new_old_passwowrd"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "password", "foobar"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", ""),
