@@ -23,6 +23,18 @@ func dataSourcePassword() *schema.Resource {
 			Computed:    true,
 			Description: "Project ID of the project where password should be created.",
 		},
+		"username": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Sensitive:   true,
+			Description: "Username value.",
+		},
+		"email": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Sensitive:   true,
+			Description: "Email value.",
+		},
 		"password": {
 			Type:        schema.TypeString,
 			Computed:    true,
@@ -31,7 +43,7 @@ func dataSourcePassword() *schema.Resource {
 		},
 	}
 
-	for i := 1; i <= customFieldCound; i++ {
+	for i := 1; i <= customFieldCount; i++ {
 		passwordSchema[fmt.Sprintf("custom_field_%d", i)] = &schema.Schema{
 			Type:        schema.TypeString,
 			Computed:    true,

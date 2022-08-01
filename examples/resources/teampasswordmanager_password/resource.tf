@@ -9,12 +9,16 @@ resource "teampasswordmanager_project" "new" {
 
 resource "teampasswordmanager_password" "database" {
   name       = "database"
+  username   = "root"
+  email      = "root@example.com"
   password   = "feechu0W"
   project_id = teampasswordmanager_project.new.id
 }
 
 resource "teampasswordmanager_password" "sendgrid" {
   name       = "sendgrid"
+  username   = "admin"
+  email      = "admin@sendgrid.com"
   password   = "az4Oowis"
   project_id = teampasswordmanager_project.new.id
 
