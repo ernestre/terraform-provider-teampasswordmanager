@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const customFieldCound = 10
+const customFieldCount = 10
 
 func resourcePassword() *schema.Resource {
 	passwordSchema := map[string]*schema.Schema{
@@ -38,7 +38,7 @@ func resourcePassword() *schema.Resource {
 		},
 	}
 
-	for i := 1; i <= customFieldCound; i++ {
+	for i := 1; i <= customFieldCount; i++ {
 		passwordSchema[fmt.Sprintf("custom_field_%d", i)] = &schema.Schema{
 			Type:        schema.TypeString,
 			Optional:    true,
