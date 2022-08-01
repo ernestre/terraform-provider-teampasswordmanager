@@ -36,6 +36,12 @@ func resourcePassword() *schema.Resource {
 			Sensitive:   true,
 			Description: "Username value.",
 		},
+		"email": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Sensitive:   true,
+			Description: "Email value.",
+		},
 		"password": {
 			Type:        schema.TypeString,
 			Required:    true,
@@ -74,6 +80,7 @@ func resourcePasswordCreate(ctx context.Context, d *schema.ResourceData, m inter
 		ProjectID:    d.Get("project_id").(int),
 		Password:     d.Get("password").(string),
 		Username:     d.Get("username").(string),
+		Email:        d.Get("email").(string),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -124,6 +131,7 @@ func resourcePasswordUpdate(ctx context.Context, d *schema.ResourceData, m inter
 		Name:         d.Get("name").(string),
 		Password:     d.Get("password").(string),
 		Username:     d.Get("username").(string),
+		Email:        d.Get("email").(string),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -184,6 +192,10 @@ func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	if err = d.Set("username", passwordData.Username); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err = d.Set("email", passwordData.Email); err != nil {
 		return diag.FromErr(err)
 	}
 

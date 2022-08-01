@@ -25,6 +25,7 @@ resource "teampasswordmanager_project" "new" {
 resource "teampasswordmanager_password" "database" {
   name       = "database"
   username   = "root"
+  email      = "root@example.com"
   password   = "feechu0W"
   project_id = teampasswordmanager_project.new.id
 }
@@ -32,6 +33,7 @@ resource "teampasswordmanager_password" "database" {
 resource "teampasswordmanager_password" "sendgrid" {
   name       = "sendgrid"
   username   = "admin"
+  email      = "admin@sendgrid.com"
   password   = "az4Oowis"
   project_id = teampasswordmanager_project.new.id
 }
@@ -64,6 +66,7 @@ data "teampasswordmanager_password" "sendgrid" {
 - `custom_field_7` (String) Custom field 7
 - `custom_field_8` (String) Custom field 8
 - `custom_field_9` (String) Custom field 9
+- `email` (String, Sensitive) Email value.
 - `name` (String) Name of the password, usually used for seaching.
 - `password` (String, Sensitive) Password value.
 - `project_id` (Number) Project ID of the project where password should be created.

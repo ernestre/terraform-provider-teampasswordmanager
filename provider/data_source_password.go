@@ -29,6 +29,12 @@ func dataSourcePassword() *schema.Resource {
 			Sensitive:   true,
 			Description: "Username value.",
 		},
+		"email": {
+			Type:        schema.TypeString,
+			Computed:    true,
+			Sensitive:   true,
+			Description: "Email value.",
+		},
 		"password": {
 			Type:        schema.TypeString,
 			Computed:    true,
