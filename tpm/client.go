@@ -31,6 +31,10 @@ func NewClient(c Config) Client {
 	if c.ApiVersion == "" {
 		c.ApiVersion = DefaultApiVersion
 	}
+
+	c.Host = strings.ReplaceAll(c.Host, " ", "")
+	c.Host = strings.TrimRight(c.Host, "/")
+
 	return Client{
 		httpClient: http.Client{
 			Timeout: time.Second * 15,
@@ -46,6 +50,17 @@ func (c Client) sendRequest(r *http.Request) (*http.Response, error) {
 	}
 
 	return c.httpClient.Do(r)
+}
+
+func trimEndpoint(requestURI string) string {
+	parts := strings.Split(requestURI, "index.php")
+
+	if len(parts) > 1 {
+		lastPart := parts[len(parts)-1]
+		return strings.TrimLeft(lastPart, "/")
+	}
+
+	return strings.TrimLeft(parts[0], "/")
 }
 
 func addRequiredHeaders(
@@ -64,7 +79,7 @@ func addRequiredHeaders(
 		body = b
 	}
 
-	endpoint := strings.TrimPrefix(request.URL.RequestURI(), "/index.php/")
+	endpoint := trimEndpoint(request.URL.RequestURI())
 	time := time.Now().Unix()
 	hash := generateAuthHash(endpoint, time, body, config.PrivateKey)
 	headers := generateAuthHeaders(config.PublicKey, hash, time)

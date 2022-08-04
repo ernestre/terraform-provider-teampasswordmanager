@@ -115,7 +115,7 @@ func TestAddRequiredHeaders(t *testing.T) {
 	}
 
 	authHash := generateAuthHash(
-		endpoint,
+		strings.TrimLeft(endpoint, "/"),
 		ts,
 		requestBody,
 		testConfig.PrivateKey,
@@ -203,5 +203,117 @@ func TestSendRequestWithEmptyBody(t *testing.T) {
 
 	if testConfig.PublicKey != receivedPublicKey {
 		t.Error("generated hash does not match the hash received on the server side")
+	}
+}
+
+func TestHostTrailingSlashTrim(t *testing.T) {
+	tests := []struct {
+		host         string
+		expectedHost string
+	}{
+		{
+			host:         "https://teampasswordmanager.com/",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com///",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com/ /  /   /",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com\\//\\",
+			expectedHost: "https://teampasswordmanager.com\\//\\",
+		},
+		{
+			host:         "https://teampasswordmanager.com/custom-path/foo/",
+			expectedHost: "https://teampasswordmanager.com/custom-path/foo",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.host, func(t *testing.T) {
+			c := Config{
+				Host: test.host,
+			}
+
+			client := NewClient(c)
+
+			if client.config.Host != test.expectedHost {
+				t.Errorf(
+					"Invalid host name. Expected %s, got %s",
+					test.expectedHost,
+					client.config.Host,
+				)
+			}
+		})
+	}
+}
+
+func TestParseEndpoint(t *testing.T) {
+	tests := []struct {
+		name             string
+		endpoint         string
+		expectedEndpoint string
+	}{
+		{
+			name:             "Regular endpoint",
+			endpoint:         "/index.php/api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+		{
+			name:             "Endpoint without split seperator",
+			endpoint:         "/api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+		{
+			name:             "Endpoint without split seperator and slash prefix",
+			endpoint:         "api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+		{
+			name:             "Endpoint with multiple split seperators",
+			endpoint:         "/index.php/foo/bar/foobar/index.php/api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+		{
+			name:             "Endpoint without slash prefix",
+			endpoint:         "index.php/api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+		{
+			name:             "Endpoint with multiple slashes",
+			endpoint:         "//index.php////api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+		{
+			name:             "Endpoint with suffix",
+			endpoint:         "pwmanager/index.php/api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+		{
+			name:             "Endpoint with multiple suffixes",
+			endpoint:         "tpm/pwmanager/index.php/api/v5/passwords/35.json",
+			expectedEndpoint: "api/v5/passwords/35.json",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := trimEndpoint(test.endpoint)
+			if result != test.expectedEndpoint {
+				t.Errorf(
+					"Prasing endpoint failed. Expected %s, got %s",
+					test.expectedEndpoint,
+					result,
+				)
+			}
+		})
 	}
 }
