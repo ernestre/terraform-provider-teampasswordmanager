@@ -52,6 +52,17 @@ func (c Client) sendRequest(r *http.Request) (*http.Response, error) {
 	return c.httpClient.Do(r)
 }
 
+func trimEndpoint(requestURI string) string {
+	parts := strings.Split(requestURI, "index.php")
+
+	if len(parts) > 1 {
+		lastPart := parts[len(parts)-1]
+		return strings.TrimLeft(lastPart, "/")
+	}
+
+	return strings.TrimLeft(parts[0], "/")
+}
+
 func addRequiredHeaders(
 	config Config,
 	request *http.Request,
@@ -68,7 +79,7 @@ func addRequiredHeaders(
 		body = b
 	}
 
-	endpoint := strings.TrimPrefix(request.URL.RequestURI(), "/index.php/")
+	endpoint := trimEndpoint(request.URL.RequestURI())
 	time := time.Now().Unix()
 	hash := generateAuthHash(endpoint, time, body, config.PrivateKey)
 	headers := generateAuthHeaders(config.PublicKey, hash, time)
