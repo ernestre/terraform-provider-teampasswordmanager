@@ -31,6 +31,10 @@ func NewClient(c Config) Client {
 	if c.ApiVersion == "" {
 		c.ApiVersion = DefaultApiVersion
 	}
+
+	c.Host = strings.ReplaceAll(c.Host, " ", "")
+	c.Host = strings.TrimRight(c.Host, "/")
+
 	return Client{
 		httpClient: http.Client{
 			Timeout: time.Second * 15,

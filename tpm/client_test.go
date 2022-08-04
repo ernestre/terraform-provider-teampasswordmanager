@@ -205,3 +205,53 @@ func TestSendRequestWithEmptyBody(t *testing.T) {
 		t.Error("generated hash does not match the hash received on the server side")
 	}
 }
+
+func TestHostTrailingSlashTrim(t *testing.T) {
+	tests := []struct {
+		host         string
+		expectedHost string
+	}{
+		{
+			host:         "https://teampasswordmanager.com/",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com///",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com/ /  /   /",
+			expectedHost: "https://teampasswordmanager.com",
+		},
+		{
+			host:         "https://teampasswordmanager.com\\//\\",
+			expectedHost: "https://teampasswordmanager.com\\//\\",
+		},
+		{
+			host:         "https://teampasswordmanager.com/custom-path/foo/",
+			expectedHost: "https://teampasswordmanager.com/custom-path/foo",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.host, func(t *testing.T) {
+			c := Config{
+				Host: test.host,
+			}
+
+			client := NewClient(c)
+
+			if client.config.Host != test.expectedHost {
+				t.Errorf(
+					"Invalid host name. Expected %s, got %s",
+					test.expectedHost,
+					client.config.Host,
+				)
+			}
+		})
+	}
+}
