@@ -7,7 +7,13 @@ type ShortDate struct {
 }
 
 func (t *ShortDate) UnmarshalJSON(b []byte) (err error) {
-	date, err := time.Parse(`"2006-01-02"`, string(b))
+	value := string(b)
+
+	if value == "null" || value == "" {
+		return
+	}
+
+	date, err := time.Parse(`"2006-01-02"`, value)
 	if err != nil {
 		return err
 	}
@@ -20,7 +26,13 @@ type LongDate struct {
 }
 
 func (t *LongDate) UnmarshalJSON(b []byte) (err error) {
-	date, err := time.Parse(`"2006-01-02 15:04:05"`, string(b))
+	value := string(b)
+
+	if value == "null" || value == "" {
+		return
+	}
+
+	date, err := time.Parse(`"2006-01-02 15:04:05"`, value)
 	if err != nil {
 		return err
 	}
