@@ -130,42 +130,52 @@ type (
 )
 
 type (
+	// https://teampasswordmanager.com/docs/api-passwords#create_password
 	CreatePasswordRequest struct {
-		Name         string `json:"name,omitempty"`
-		ProjectID    int    `json:"project_id,omitempty"`
-		Password     string `json:"password"`
-		Username     string `json:"username"`
-		Email        string `json:"email"`
-		CustomData1  string `json:"custom_data1"`
-		CustomData2  string `json:"custom_data2"`
-		CustomData3  string `json:"custom_data3"`
-		CustomData4  string `json:"custom_data4"`
-		CustomData5  string `json:"custom_data5"`
-		CustomData6  string `json:"custom_data6"`
-		CustomData7  string `json:"custom_data7"`
-		CustomData8  string `json:"custom_data8"`
-		CustomData9  string `json:"custom_data9"`
-		CustomData10 string `json:"custom_data10"`
+		Name         string    `json:"name,omitempty"`
+		ProjectID    int       `json:"project_id,omitempty"`
+		Tags         Tags      `json:"tags"`
+		AccessInfo   string    `json:"access_info,omitempty"`
+		Username     string    `json:"username"`
+		Email        string    `json:"email"`
+		Password     string    `json:"password"`
+		ExpiryDate   ShortDate `json:"expiry_date"`
+		Notes        string    `json:"notes,omitempty"`
+		CustomData1  string    `json:"custom_data1"`
+		CustomData2  string    `json:"custom_data2"`
+		CustomData3  string    `json:"custom_data3"`
+		CustomData4  string    `json:"custom_data4"`
+		CustomData5  string    `json:"custom_data5"`
+		CustomData6  string    `json:"custom_data6"`
+		CustomData7  string    `json:"custom_data7"`
+		CustomData8  string    `json:"custom_data8"`
+		CustomData9  string    `json:"custom_data9"`
+		CustomData10 string    `json:"custom_data10"`
 	}
 
 	CreatePasswordResponse struct {
 		ID int `json:"id,omitempty"`
 	}
 
+	// https://teampasswordmanager.com/docs/api-passwords#update_password
 	UpdatePasswordRequest struct {
-		Name         string `json:"name,omitempty"`
-		Password     string `json:"password,omitempty"`
-		Username     string `json:"username,"`
-		Email        string `json:"email,"`
-		CustomData1  string `json:"custom_data1"`
-		CustomData2  string `json:"custom_data2"`
-		CustomData3  string `json:"custom_data3"`
-		CustomData4  string `json:"custom_data4"`
-		CustomData5  string `json:"custom_data5"`
-		CustomData6  string `json:"custom_data6"`
-		CustomData7  string `json:"custom_data7"`
-		CustomData8  string `json:"custom_data8"`
-		CustomData9  string `json:"custom_data9"`
-		CustomData10 string `json:"custom_data10"`
+		Name         string    `json:"name,omitempty"`
+		Tags         Tags      `json:"tags"`
+		AccessInfo   string    `json:"access_info,omitempty"`
+		Username     string    `json:"username,"`
+		Email        string    `json:"email,"`
+		Password     string    `json:"password,omitempty"`
+		ExpiryDate   ShortDate `json:"expiry_date"`
+		Notes        string    `json:"notes,omitempty"`
+		CustomData1  string    `json:"custom_data1"`
+		CustomData2  string    `json:"custom_data2"`
+		CustomData3  string    `json:"custom_data3"`
+		CustomData4  string    `json:"custom_data4"`
+		CustomData5  string    `json:"custom_data5"`
+		CustomData6  string    `json:"custom_data6"`
+		CustomData7  string    `json:"custom_data7"`
+		CustomData8  string    `json:"custom_data8"`
+		CustomData9  string    `json:"custom_data9"`
+		CustomData10 string    `json:"custom_data10"`
 	}
 )
