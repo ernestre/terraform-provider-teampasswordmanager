@@ -133,14 +133,14 @@ type (
 	// https://teampasswordmanager.com/docs/api-passwords#create_password
 	CreatePasswordRequest struct {
 		Name         string    `json:"name,omitempty"`
-		ProjectID    int       `json:"project_id,omitempty"`
+		ProjectID    int       `json:"project_id"`
 		Tags         Tags      `json:"tags"`
-		AccessInfo   string    `json:"access_info,omitempty"`
+		AccessInfo   string    `json:"access_info"`
 		Username     string    `json:"username"`
 		Email        string    `json:"email"`
 		Password     string    `json:"password"`
 		ExpiryDate   ShortDate `json:"expiry_date"`
-		Notes        string    `json:"notes,omitempty"`
+		Notes        string    `json:"notes"`
 		CustomData1  string    `json:"custom_data1"`
 		CustomData2  string    `json:"custom_data2"`
 		CustomData3  string    `json:"custom_data3"`
@@ -159,14 +159,14 @@ type (
 
 	// https://teampasswordmanager.com/docs/api-passwords#update_password
 	UpdatePasswordRequest struct {
-		Name         string    `json:"name,omitempty"`
+		Name         string    `json:"name"`
 		Tags         Tags      `json:"tags"`
-		AccessInfo   string    `json:"access_info,omitempty"`
+		AccessInfo   string    `json:"access_info"`
 		Username     string    `json:"username,"`
 		Email        string    `json:"email,"`
-		Password     string    `json:"password,omitempty"`
+		Password     string    `json:"password"`
 		ExpiryDate   ShortDate `json:"expiry_date"`
-		Notes        string    `json:"notes,omitempty"`
+		Notes        string    `json:"notes"`
 		CustomData1  string    `json:"custom_data1"`
 		CustomData2  string    `json:"custom_data2"`
 		CustomData3  string    `json:"custom_data3"`
