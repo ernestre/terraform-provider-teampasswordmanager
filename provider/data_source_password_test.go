@@ -25,6 +25,7 @@ func TestAccTPMDataSourcePassword(t *testing.T) {
                         email = "foo@example.com"
                         notes = "additinal information about password"
                         access_info = "ftp://ip-address"
+                        tags = ["a","b","c"]
 
                         custom_field_1 = "custom data 1"
                         custom_field_2 = "custom data 2"
@@ -52,6 +53,10 @@ func TestAccTPMDataSourcePassword(t *testing.T) {
 					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "email", "foo@example.com"),
 					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "notes", "additinal information about password"),
 					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "access_info", "ftp://ip-address"),
+					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "tags.#", "3"),
+					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "tags.0", "a"),
+					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "tags.1", "b"),
+					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "tags.2", "c"),
 					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "custom_field_1", "custom data 1"),
 					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "custom_field_2", "custom data 2"),
 					resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", "custom_field_3", "custom data 3"),

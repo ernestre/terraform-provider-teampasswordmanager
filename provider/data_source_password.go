@@ -51,6 +51,14 @@ func dataSourcePassword() *schema.Resource {
 			Optional:    true,
 			Description: "Access information. Examples: http://site, ftp://ip-address, manual login.",
 		},
+		"tags": {
+			Type: schema.TypeList,
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional:    true,
+			Description: "Tags which are usually used for search. Tags should be unique and in alphabetical order.",
+		},
 	}
 
 	for i := 1; i <= customFieldCount; i++ {

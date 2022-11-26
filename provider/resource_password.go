@@ -58,6 +58,14 @@ func resourcePassword() *schema.Resource {
 			Optional:    true,
 			Description: "Access information. Examples: http://site, ftp://ip-address, manual login.",
 		},
+		"tags": {
+			Type: schema.TypeList,
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional:    true,
+			Description: "Tags which are usually used for search. Tags should be unique and in alphabetical order.",
+		},
 	}
 
 	for i := 1; i <= customFieldCount; i++ {
@@ -93,6 +101,7 @@ func resourcePasswordCreate(ctx context.Context, d *schema.ResourceData, m inter
 		Email:        d.Get("email").(string),
 		Notes:        d.Get("notes").(string),
 		AccessInfo:   d.Get("access_info").(string),
+		Tags:         convertListToTags(d.Get("tags").([]interface{})),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -146,6 +155,7 @@ func resourcePasswordUpdate(ctx context.Context, d *schema.ResourceData, m inter
 		Email:        d.Get("email").(string),
 		Notes:        d.Get("notes").(string),
 		AccessInfo:   d.Get("access_info").(string),
+		Tags:         convertListToTags(d.Get("tags").([]interface{})),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -219,6 +229,12 @@ func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	if err = d.Set("access_info", passwordData.AccessInfo); err != nil {
 		return diag.FromErr(err)
+	}
+
+	if len(passwordData.Tags) > 0 {
+		if err = d.Set("tags", passwordData.Tags); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	customFields := map[*tpm.CustomField]string{

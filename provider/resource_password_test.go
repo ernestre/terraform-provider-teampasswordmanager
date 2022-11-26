@@ -30,6 +30,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
                         email = "foo@bar.com"
                         notes = "additinal information about password"
                         access_info = "ftp://ip-address"
+                        tags = ["a","b","c"]
 
                         custom_field_1 = "custom data 1"
                         custom_field_2 = "custom data 2"
@@ -49,6 +50,10 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", "secret_username"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "email", "foo@bar.com"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", "additinal information about password"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.#", "3"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.0", "a"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.1", "b"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.2", "c"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", "ftp://ip-address"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", "custom data 1"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", "custom data 2"),
@@ -81,6 +86,8 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "email", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", ""),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", ""),
+					resource.TestCheckNoResourceAttr("teampasswordmanager_password.new", "tags.#"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", ""),
