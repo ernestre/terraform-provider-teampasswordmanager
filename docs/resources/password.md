@@ -53,6 +53,7 @@ resource "teampasswordmanager_password" "sendgrid" {
 
 ### Optional
 
+- `access_info` (String) Access information. Examples: http://site, ftp://ip-address, manual login.
 - `custom_field_1` (String) Custom field 1
 - `custom_field_10` (String) Custom field 10
 - `custom_field_2` (String) Custom field 2
@@ -64,7 +65,10 @@ resource "teampasswordmanager_password" "sendgrid" {
 - `custom_field_8` (String) Custom field 8
 - `custom_field_9` (String) Custom field 9
 - `email` (String, Sensitive) Email value.
+- `expiry_date` (String) Expiry date of the password.
 - `id` (String) Password ID.
+- `notes` (String) Notes are used to store additional information about the password.
+- `tags` (List of String) Tags which are usually used for search. Tags should be unique and in alphabetical order.
 - `username` (String, Sensitive) Username value.
 
 

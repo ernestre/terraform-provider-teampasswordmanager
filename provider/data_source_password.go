@@ -43,12 +43,12 @@ func dataSourcePassword() *schema.Resource {
 		},
 		"notes": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "Notes are used to store additional information about the password.",
 		},
 		"access_info": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "Access information. Examples: http://site, ftp://ip-address, manual login.",
 		},
 		"tags": {
@@ -56,12 +56,12 @@ func dataSourcePassword() *schema.Resource {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional:    true,
+			Computed:    true,
 			Description: "Tags which are usually used for search. Tags should be unique and in alphabetical order.",
 		},
 		"expiry_date": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "Expiry date of the password.",
 		},
 	}
