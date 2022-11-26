@@ -41,6 +41,11 @@ func dataSourcePassword() *schema.Resource {
 			Sensitive:   true,
 			Description: "Password value.",
 		},
+		"notes": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Notes are used to store additional information about the password.",
+		},
 	}
 
 	for i := 1; i <= customFieldCount; i++ {
