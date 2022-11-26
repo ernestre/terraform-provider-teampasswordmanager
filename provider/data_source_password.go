@@ -46,6 +46,11 @@ func dataSourcePassword() *schema.Resource {
 			Optional:    true,
 			Description: "Notes are used to store additional information about the password.",
 		},
+		"access_info": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Access information. Examples: http://site, ftp://ip-address, manual login.",
+		},
 	}
 
 	for i := 1; i <= customFieldCount; i++ {

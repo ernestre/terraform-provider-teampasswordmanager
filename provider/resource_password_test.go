@@ -29,6 +29,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
                         username = "secret_username"
                         email = "foo@bar.com"
                         notes = "additinal information about password"
+                        access_info = "ftp://ip-address"
 
                         custom_field_1 = "custom data 1"
                         custom_field_2 = "custom data 2"
@@ -48,6 +49,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", "secret_username"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "email", "foo@bar.com"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", "additinal information about password"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", "ftp://ip-address"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", "custom data 1"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", "custom data 2"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", "custom data 3"),
@@ -78,6 +80,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "email", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", ""),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", ""),

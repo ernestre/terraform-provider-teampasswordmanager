@@ -53,6 +53,11 @@ func resourcePassword() *schema.Resource {
 			Optional:    true,
 			Description: "Notes are used to store additional information about the password.",
 		},
+		"access_info": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Access information. Examples: http://site, ftp://ip-address, manual login.",
+		},
 	}
 
 	for i := 1; i <= customFieldCount; i++ {
@@ -87,6 +92,7 @@ func resourcePasswordCreate(ctx context.Context, d *schema.ResourceData, m inter
 		Username:     d.Get("username").(string),
 		Email:        d.Get("email").(string),
 		Notes:        d.Get("notes").(string),
+		AccessInfo:   d.Get("access_info").(string),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -139,6 +145,7 @@ func resourcePasswordUpdate(ctx context.Context, d *schema.ResourceData, m inter
 		Username:     d.Get("username").(string),
 		Email:        d.Get("email").(string),
 		Notes:        d.Get("notes").(string),
+		AccessInfo:   d.Get("access_info").(string),
 		CustomData1:  d.Get("custom_field_1").(string),
 		CustomData2:  d.Get("custom_field_2").(string),
 		CustomData3:  d.Get("custom_field_3").(string),
@@ -207,6 +214,10 @@ func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	if err = d.Set("notes", passwordData.Notes); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err = d.Set("access_info", passwordData.AccessInfo); err != nil {
 		return diag.FromErr(err)
 	}
 
