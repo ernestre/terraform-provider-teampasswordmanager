@@ -3,6 +3,7 @@ package provider
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 	"testing"
 
@@ -31,6 +32,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
                         notes = "additinal information about password"
                         access_info = "ftp://ip-address"
                         tags = ["a","b","c"]
+                        expiry_date = "2022-11-26"
 
                         custom_field_1 = "custom data 1"
                         custom_field_2 = "custom data 2"
@@ -50,11 +52,12 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", "secret_username"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "email", "foo@bar.com"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", "additinal information about password"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", "ftp://ip-address"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.#", "3"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.0", "a"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.1", "b"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.2", "c"),
-					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", "ftp://ip-address"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "expiry_date", "2022-11-26"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", "custom data 1"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", "custom data 2"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", "custom data 3"),
@@ -88,6 +91,7 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", ""),
 					resource.TestCheckNoResourceAttr("teampasswordmanager_password.new", "tags.#"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "expiry_date", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", ""),
@@ -100,6 +104,30 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_10", ""),
 					testAccCheckTPMPasswordExists("teampasswordmanager_password.new", "teampasswordmanager_project.my_project"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccTPMPasswordInvalidDateFormat(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckTPMPasswordDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+                    resource "teampasswordmanager_project" "my_project" {
+                        name = "test_project"
+                    }
+                    resource "teampasswordmanager_password" "new" {
+                        name = "new_password"
+                        project_id = teampasswordmanager_project.my_project.id
+                        password = "secure_password"
+                        expiry_date = "2022-11-26 00:11:22"
+                    }
+                `,
+				ExpectError: regexp.MustCompile(ErrInvalidExpiryDateFormat.Error()),
 			},
 		},
 	})

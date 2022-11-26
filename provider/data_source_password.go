@@ -59,6 +59,11 @@ func dataSourcePassword() *schema.Resource {
 			Optional:    true,
 			Description: "Tags which are usually used for search. Tags should be unique and in alphabetical order.",
 		},
+		"expiry_date": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Expiry date of the password.",
+		},
 	}
 
 	for i := 1; i <= customFieldCount; i++ {

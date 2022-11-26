@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/ernestre/terraform-provider-teampasswordmanager/tpm"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -66,6 +67,11 @@ func resourcePassword() *schema.Resource {
 			Optional:    true,
 			Description: "Tags which are usually used for search. Tags should be unique and in alphabetical order.",
 		},
+		"expiry_date": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Expiry date of the password.",
+		},
 	}
 
 	for i := 1; i <= customFieldCount; i++ {
@@ -112,6 +118,17 @@ func resourcePasswordCreate(ctx context.Context, d *schema.ResourceData, m inter
 		CustomData8:  d.Get("custom_field_8").(string),
 		CustomData9:  d.Get("custom_field_9").(string),
 		CustomData10: d.Get("custom_field_10").(string),
+	}
+
+	expireDate := d.Get("expiry_date").(string)
+	if expireDate != "" {
+		parsedExpireDate, err := time.Parse(tpm.ShortDateTimeFormat, expireDate)
+
+		if err != nil {
+			return diag.FromErr(ErrInvalidExpiryDateFormat)
+		}
+
+		r.ExpiryDate = tpm.ShortDate(parsedExpireDate)
 	}
 
 	resp, err := c.Create(r)
@@ -166,6 +183,17 @@ func resourcePasswordUpdate(ctx context.Context, d *schema.ResourceData, m inter
 		CustomData8:  d.Get("custom_field_8").(string),
 		CustomData9:  d.Get("custom_field_9").(string),
 		CustomData10: d.Get("custom_field_10").(string),
+	}
+
+	expireDate := d.Get("expiry_date").(string)
+	if expireDate != "" {
+		parsedExpireDate, err := time.Parse(tpm.ShortDateTimeFormat, expireDate)
+
+		if err != nil {
+			return diag.FromErr(ErrInvalidExpiryDateFormat)
+		}
+
+		r.ExpiryDate = tpm.ShortDate(parsedExpireDate)
 	}
 
 	if err = c.Update(passwordID, r); err != nil {
@@ -233,6 +261,13 @@ func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interfa
 
 	if len(passwordData.Tags) > 0 {
 		if err = d.Set("tags", passwordData.Tags); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	expireDate := time.Time(passwordData.ExpiryDate)
+	if !expireDate.IsZero() {
+		if err = d.Set("expiry_date", expireDate.Format(tpm.ShortDateTimeFormat)); err != nil {
 			return diag.FromErr(err)
 		}
 	}

@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	shortTimeFormat = "2006-01-02"
-	longTimeFormat  = "2006-01-02 15:04:05"
+	ShortDateTimeFormat = "2006-01-02"
+	LongDateTimeFormat  = "2006-01-02 15:04:05"
 )
 
 func marshalCustomDateToJSON(t time.Time, format string) ([]byte, error) {
@@ -30,11 +30,11 @@ func unmarshalCustomDateToJSON(b []byte, format string) (time.Time, error) {
 type ShortDate time.Time
 
 func (d ShortDate) MarshalJSON() ([]byte, error) {
-	return marshalCustomDateToJSON(time.Time(d), shortTimeFormat)
+	return marshalCustomDateToJSON(time.Time(d), ShortDateTimeFormat)
 }
 
 func (d *ShortDate) UnmarshalJSON(b []byte) (err error) {
-	t, err := unmarshalCustomDateToJSON(b, shortTimeFormat)
+	t, err := unmarshalCustomDateToJSON(b, ShortDateTimeFormat)
 	if err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func (d *ShortDate) UnmarshalJSON(b []byte) (err error) {
 type LongDate time.Time
 
 func (d *LongDate) UnmarshalJSON(b []byte) (err error) {
-	t, err := unmarshalCustomDateToJSON(b, longTimeFormat)
+	t, err := unmarshalCustomDateToJSON(b, LongDateTimeFormat)
 	if err != nil {
 		return err
 	}
@@ -58,5 +58,5 @@ func (d *LongDate) UnmarshalJSON(b []byte) (err error) {
 }
 
 func (d LongDate) MarshalJSON() ([]byte, error) {
-	return marshalCustomDateToJSON(time.Time(d), longTimeFormat)
+	return marshalCustomDateToJSON(time.Time(d), LongDateTimeFormat)
 }
