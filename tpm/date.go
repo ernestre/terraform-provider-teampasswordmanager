@@ -44,6 +44,10 @@ func (d *ShortDate) UnmarshalJSON(b []byte) (err error) {
 	return nil
 }
 
+func (d ShortDate) String() string {
+	return time.Time(d).Format(ShortDateTimeFormat)
+}
+
 type LongDate time.Time
 
 func (d *LongDate) UnmarshalJSON(b []byte) (err error) {
@@ -59,4 +63,8 @@ func (d *LongDate) UnmarshalJSON(b []byte) (err error) {
 
 func (d LongDate) MarshalJSON() ([]byte, error) {
 	return marshalCustomDateToJSON(time.Time(d), LongDateTimeFormat)
+}
+
+func (d LongDate) String() string {
+	return time.Time(d).Format(LongDateTimeFormat)
 }
