@@ -15,3 +15,6 @@ build-tf:
 
 tf-run: build-tf
 	cd ./examples/ && rm -rf .terraform* && terraform init && terraform apply --auto-approve
+
+generate:
+	go generate ./...
