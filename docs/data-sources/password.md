@@ -57,6 +57,9 @@ data "teampasswordmanager_password" "sendgrid" {
 ### Read-Only
 
 - `access_info` (String) Access information. Examples: http://site, ftp://ip-address, manual login.
+- `archived` (Boolean) Whether the password is archived and/or the project is archived.
+- `created_by` (Set of Object) User which created the password. (see [below for nested schema](#nestedatt--created_by))
+- `created_on` (String) Datetime when the password was created.
 - `custom_field_1` (String) Custom field 1
 - `custom_field_10` (String) Custom field 10
 - `custom_field_2` (String) Custom field 2
@@ -69,11 +72,71 @@ data "teampasswordmanager_password" "sendgrid" {
 - `custom_field_9` (String) Custom field 9
 - `email` (String, Sensitive) Email value.
 - `expiry_date` (String) Expiry date of the password.
+- `expiry_status` (Number) Expiry status of the password. 0=no date or not expired, 1=expires today, 2=expired, 3=will expire soon
+- `external_sharing` (Boolean) Whether the password is shared externaly.
+- `external_url` (String) External url of the password if it's shared externally.
+- `favorite` (Boolean) Whether the password is marked as favorite.
+- `linked` (Boolean) Whether the password is linked password.
+- `locked` (Boolean) Whether the password is locked.
+- `locking_request_notify` (Number) Locking request notification has the following values: 0=password not locked, 1=notify/request the password manager, 2=notify/request all the users with manage permission.
+- `locking_type` (Number) Locking type has the following values: 0=password not locked, 1=requires a reason to unlock, 2=requires permission to unlock.
+- `managed_by` (Set of Object) Main manager of the password. (see [below for nested schema](#nestedatt--managed_by))
 - `name` (String) Name of the password, usually used for seaching.
 - `notes` (String) Notes are used to store additional information about the password.
+- `num_files` (Number) Number of files.
+- `parents` (List of Number) List of project ids from the root to the project of the password (in descending order), as seen by the use.
 - `password` (String, Sensitive) Password value.
+- `project_archived` (Boolean) Whether the project is archived.
 - `project_id` (Number) Project ID of the project where password should be created.
+- `source_password_id` (Number) If the password is linked, then this will be the ID of the source password.
 - `tags` (List of String) Tags which are usually used for search. Tags should be unique and in alphabetical order.
+- `updated_by` (Set of Object) User which updated the password. (see [below for nested schema](#nestedatt--updated_by))
+- `updated_on` (String) Datetime when the password was udpated.
+- `user_permission` (Set of Object) Permission object (permission id, description) that indicates what permission has the user making the request on the password. (see [below for nested schema](#nestedatt--user_permission))
 - `username` (String, Sensitive) Username value.
+
+<a id="nestedatt--created_by"></a>
+### Nested Schema for `created_by`
+
+Read-Only:
+
+- `email_address` (String)
+- `id` (Number)
+- `name` (String)
+- `role` (String)
+- `username` (String)
+
+
+<a id="nestedatt--managed_by"></a>
+### Nested Schema for `managed_by`
+
+Read-Only:
+
+- `email_address` (String)
+- `id` (Number)
+- `name` (String)
+- `role` (String)
+- `username` (String)
+
+
+<a id="nestedatt--updated_by"></a>
+### Nested Schema for `updated_by`
+
+Read-Only:
+
+- `email_address` (String)
+- `id` (Number)
+- `name` (String)
+- `role` (String)
+- `username` (String)
+
+
+<a id="nestedatt--user_permission"></a>
+### Nested Schema for `user_permission`
+
+Read-Only:
+
+- `id` (Number)
+- `label` (String)
 
 
