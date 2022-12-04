@@ -132,6 +132,43 @@ func (c PasswordClient) Delete(passwordID int) error {
 	)
 }
 
+func (c PasswordClient) UpdatePasswordSecurity(
+	passwordID int,
+	updatePasswordSecurity UpdatePasswordSecurityRequest,
+) error {
+	reqBody, err := json.Marshal(updatePasswordSecurity)
+	if err != nil {
+		return fmt.Errorf("failed to marshal update password security request body: %w", err)
+	}
+
+	endpoint := c.getUpdatePasswordSecurityEndpoint(passwordID)
+
+	req, err := http.NewRequest(http.MethodPut, c.generateURL(endpoint), bytes.NewReader(reqBody))
+	if err != nil {
+		return fmt.Errorf("failed to create 'update password security' request: %w", err)
+	}
+
+	resp, err := c.client.sendRequest(req)
+	if err != nil {
+		return fmt.Errorf("update password security request failed: %w", err)
+	}
+
+	if resp.StatusCode == http.StatusNoContent {
+		return nil
+	}
+
+	apiError, err := errorResponseToApiError(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to parse api error: %w", err)
+	}
+
+	return fmt.Errorf(
+		"failed to update password by id %d: %w",
+		passwordID,
+		apiError,
+	)
+}
+
 func (c PasswordClient) Update(passwordID int, createPasswordRequest UpdatePasswordRequest) error {
 	reqBody, err := json.Marshal(createPasswordRequest)
 	if err != nil {
@@ -197,7 +234,7 @@ func (c PasswordClient) Find(field string) ([]Password, error) {
 	return passwords, fmt.Errorf("failed to find password: %w", apiError)
 }
 
-// TODO: Mage this function general, or move this logic to the base client struct.
+// TODO: Make this function general, or move this logic to the base client struct.
 func (c PasswordClient) generateURL(p string) string {
 	return fmt.Sprintf("%s/index.php/%s", c.client.config.Host, p)
 }
@@ -216,6 +253,10 @@ func (c PasswordClient) getPasswordByIDEndpoint(passwordID int) string {
 
 func (c PasswordClient) getUpdatePasswordEndpoint(passwordID int) string {
 	return fmt.Sprintf("api/%s/passwords/%d.json", c.client.config.ApiVersion, passwordID)
+}
+
+func (c PasswordClient) getUpdatePasswordSecurityEndpoint(passwordID int) string {
+	return fmt.Sprintf("api/%s/passwords/%d/security.json", c.client.config.ApiVersion, passwordID)
 }
 
 func (c PasswordClient) getPasswordSearchEndpoint(searchString string) string {

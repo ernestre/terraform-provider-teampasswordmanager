@@ -178,4 +178,10 @@ type (
 		CustomData9  string    `json:"custom_data9"`
 		CustomData10 string    `json:"custom_data10"`
 	}
+
+	UpdatePasswordSecurityRequest struct {
+		ManagedBy         int                  `json:"managed_by,omitempty"`
+		UsersPermissions  []PasswordPermission `json:"users_permissions"`
+		GroupsPermissions []PasswordPermission `json:"groups_permissions"`
+	}
 )
