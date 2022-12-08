@@ -88,6 +88,8 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 	}
 	projectClient := tpm.NewProjectClient(config)
 	passwordClient := tpm.NewPasswordClient(config)
+	userClient := tpm.NewUserClient(config)
+	groupClient := tpm.NewGroupClient(config)
 
 	project, err := projectClient.Create(tpm.CreateProjectRequest{
 		Name: "foo_proj",
@@ -96,6 +98,32 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	defer projectClient.Delete(project.ID)
+
+	user, err := userClient.Create(tpm.CreateUserRequest{
+		Username:     "test-user",
+		EmailAddress: "test@example.com",
+		Name:         "test-user",
+		Role:         tpm.UserRoleProjectManager,
+		Password:     "jahsah4bei0F",
+	})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer userClient.Delete(user.ID)
+
+	group, err := groupClient.Create(tpm.CreateGroupRequest{
+		Name: "test-group",
+	})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	defer groupClient.Delete(group.ID)
 
 	req := tpm.CreatePasswordRequest{
 		Name:        fmt.Sprintf("pass_%d", time.Now().UnixMicro()),
@@ -119,14 +147,29 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	passwordFromRemote, err := passwordClient.Get(password.ID)
+	defer passwordClient.Delete(password.ID)
+
+	err = passwordClient.UpdatePasswordSecurity(
+		password.ID,
+		tpm.UpdatePasswordSecurityRequest{
+			UsersPermissions: []tpm.PasswordPermission{
+				tpm.NewPasswordPermission(user.ID, tpm.PasswordAccessManage),
+			},
+			GroupsPermissions: []tpm.PasswordPermission{
+				tpm.NewPasswordPermission(group.ID, tpm.PasswordAccessEdit),
+			},
+		},
+	)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	defer passwordClient.Delete(password.ID)
-	defer projectClient.Delete(project.ID)
+	passwordFromRemote, err := passwordClient.Get(password.ID)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	checkDataSourceField := func(field string, expectedValue string) resource.TestCheckFunc {
 		return resource.TestCheckResourceAttr("data.teampasswordmanager_password.foo", field, expectedValue)
@@ -197,6 +240,17 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 					checkDataSourceField("managed_by.0.email_address", passwordFromRemote.ManagedBy.Email),
 					checkDataSourceField("managed_by.0.name", passwordFromRemote.ManagedBy.Name),
 					checkDataSourceField("managed_by.0.role", passwordFromRemote.ManagedBy.Role),
+					// Users permissions
+					checkDataSourceField("users_permissions.0.user.0.id", strconv.Itoa(passwordFromRemote.UsersPermissions[0].User.ID)),
+					checkDataSourceField("users_permissions.0.user.0.username", passwordFromRemote.UsersPermissions[0].User.Username),
+					checkDataSourceField("users_permissions.0.user.0.email_address", passwordFromRemote.UsersPermissions[0].User.Email),
+					checkDataSourceField("users_permissions.0.user.0.name", passwordFromRemote.UsersPermissions[0].User.Name),
+					checkDataSourceField("users_permissions.0.user.0.role", passwordFromRemote.UsersPermissions[0].User.Role),
+					checkDataSourceField("users_permissions.0.permission.0.id", strconv.Itoa(int(tpm.PasswordAccessManage))),
+					// Groups permissions
+					checkDataSourceField("groups_permissions.0.group.0.id", strconv.Itoa(passwordFromRemote.GroupsPermissions[0].Group.ID)),
+					checkDataSourceField("groups_permissions.0.group.0.name", passwordFromRemote.GroupsPermissions[0].Group.Name),
+					checkDataSourceField("groups_permissions.0.permission.0.id", strconv.Itoa(int(tpm.PasswordAccessEdit))),
 				),
 			},
 		},

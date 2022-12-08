@@ -76,6 +76,7 @@ data "teampasswordmanager_password" "sendgrid" {
 - `external_sharing` (Boolean) Whether the password is shared externaly.
 - `external_url` (String) External url of the password if it's shared externally.
 - `favorite` (Boolean) Whether the password is marked as favorite.
+- `groups_permissions` (List of Object) This is an array of objects of the following data: group object and permission object (permission id, description). Each object describes the permission set to the group on the password. These data are only available to users with manage permission on the password (they're set to null for users that don't have the manage permission). (see [below for nested schema](#nestedatt--groups_permissions))
 - `linked` (Boolean) Whether the password is linked password.
 - `locked` (Boolean) Whether the password is locked.
 - `locking_request_notify` (Number) Locking request notification has the following values: 0=password not locked, 1=notify/request the password manager, 2=notify/request all the users with manage permission.
@@ -91,9 +92,10 @@ data "teampasswordmanager_password" "sendgrid" {
 - `source_password_id` (Number) If the password is linked, then this will be the ID of the source password.
 - `tags` (List of String) Tags which are usually used for search. Tags should be unique and in alphabetical order.
 - `updated_by` (Set of Object) User which updated the password. (see [below for nested schema](#nestedatt--updated_by))
-- `updated_on` (String) Datetime when the password was udpated.
+- `updated_on` (String) Datetime when the password was updated.
 - `user_permission` (Set of Object) Permission object (permission id, description) that indicates what permission has the user making the request on the password. (see [below for nested schema](#nestedatt--user_permission))
 - `username` (String, Sensitive) Username value.
+- `users_permissions` (List of Object) This is an array of objects of the following data: user object and permission object (permission id, description). Each object describes the permission set to the user on the password. These data are only available to users with manage permission on the password (they're set to null for users that don't have the manage permission). (see [below for nested schema](#nestedatt--users_permissions))
 
 <a id="nestedatt--created_by"></a>
 ### Nested Schema for `created_by`
@@ -105,6 +107,33 @@ Read-Only:
 - `name` (String)
 - `role` (String)
 - `username` (String)
+
+
+<a id="nestedatt--groups_permissions"></a>
+### Nested Schema for `groups_permissions`
+
+Read-Only:
+
+- `group` (Set of Object) (see [below for nested schema](#nestedobjatt--groups_permissions--group))
+- `permission` (Set of Object) (see [below for nested schema](#nestedobjatt--groups_permissions--permission))
+
+<a id="nestedobjatt--groups_permissions--group"></a>
+### Nested Schema for `groups_permissions.group`
+
+Read-Only:
+
+- `id` (Number)
+- `name` (String)
+
+
+<a id="nestedobjatt--groups_permissions--permission"></a>
+### Nested Schema for `groups_permissions.permission`
+
+Read-Only:
+
+- `id` (Number)
+- `label` (String)
+
 
 
 <a id="nestedatt--managed_by"></a>
@@ -138,5 +167,34 @@ Read-Only:
 
 - `id` (Number)
 - `label` (String)
+
+
+<a id="nestedatt--users_permissions"></a>
+### Nested Schema for `users_permissions`
+
+Read-Only:
+
+- `permission` (Set of Object) (see [below for nested schema](#nestedobjatt--users_permissions--permission))
+- `user` (Set of Object) (see [below for nested schema](#nestedobjatt--users_permissions--user))
+
+<a id="nestedobjatt--users_permissions--permission"></a>
+### Nested Schema for `users_permissions.permission`
+
+Read-Only:
+
+- `id` (Number)
+- `label` (String)
+
+
+<a id="nestedobjatt--users_permissions--user"></a>
+### Nested Schema for `users_permissions.user`
+
+Read-Only:
+
+- `email_address` (String)
+- `id` (Number)
+- `name` (String)
+- `role` (String)
+- `username` (String)
 
 

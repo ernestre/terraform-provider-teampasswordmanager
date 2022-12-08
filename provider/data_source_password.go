@@ -35,6 +35,17 @@ func dataSourcePassword() *schema.Resource {
 		},
 	}
 
+	permissionShema := map[string]*schema.Schema{
+		"id": {
+			Type:     schema.TypeInt,
+			Computed: true,
+		},
+		"label": {
+			Type:     schema.TypeString,
+			Computed: true,
+		},
+	}
+
 	passwordSchema := map[string]*schema.Schema{
 		"id": {
 			Type:        schema.TypeString,
@@ -197,13 +208,60 @@ func dataSourcePassword() *schema.Resource {
 		"updated_on": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "Datetime when the password was udpated.",
+			Description: "Datetime when the password was updated.",
 		},
 		"updated_by": {
 			Type:        schema.TypeSet,
 			Computed:    true,
 			Elem:        &schema.Resource{Schema: userShema},
 			Description: "User which updated the password.",
+		},
+		"users_permissions": {
+			Type:     schema.TypeList,
+			Computed: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"user": {
+						Type:     schema.TypeSet,
+						Elem:     &schema.Resource{Schema: userShema},
+						Computed: true,
+					},
+					"permission": {
+						Type:     schema.TypeSet,
+						Elem:     &schema.Resource{Schema: permissionShema},
+						Computed: true,
+					},
+				},
+			},
+			Description: "This is an array of objects of the following data: user object and permission object (permission id, description). Each object describes the permission set to the user on the password. These data are only available to users with manage permission on the password (they're set to null for users that don't have the manage permission).",
+		},
+		"groups_permissions": {
+			Type:     schema.TypeList,
+			Computed: true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"group": {
+						Type: schema.TypeSet,
+						Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+							"id": {
+								Type:     schema.TypeInt,
+								Computed: true,
+							},
+							"name": {
+								Type:     schema.TypeString,
+								Computed: true,
+							},
+						}},
+						Computed: true,
+					},
+					"permission": {
+						Type:     schema.TypeSet,
+						Elem:     &schema.Resource{Schema: permissionShema},
+						Computed: true,
+					},
+				},
+			},
+			Description: "This is an array of objects of the following data: group object and permission object (permission id, description). Each object describes the permission set to the group on the password. These data are only available to users with manage permission on the password (they're set to null for users that don't have the manage permission).",
 		},
 	}
 
@@ -296,6 +354,8 @@ func dataSourcePasswordRead(ctx context.Context, d *schema.ResourceData, m inter
 		"updated_by": []map[string]interface{}{
 			flattenUser(passwordData.UpdatedBy),
 		},
+		"users_permissions":  flattenUsersPermissions(passwordData.UsersPermissions),
+		"groups_permissions": flattenGroupsPermissions(passwordData.GroupsPermissions),
 	}
 
 	for field, value := range fields {
@@ -341,4 +401,53 @@ func flattenPermission(up tpm.Permission) map[string]interface{} {
 		"id":    up.ID,
 		"label": up.Label,
 	}
+}
+
+func flattenUsersPermissions(up []tpm.UserPermission) []map[string]interface{} {
+	userPermissions := []map[string]interface{}{}
+	for _, userPermission := range up {
+		user := userPermission.User
+		permission := userPermission.Permission
+
+		up := map[string]interface{}{
+			"user": []map[string]interface{}{{
+				"id":            user.ID,
+				"username":      user.Username,
+				"email_address": user.Email,
+				"name":          user.Name,
+				"role":          user.Role,
+			}},
+			"permission": []map[string]interface{}{{
+				"id":    permission.ID,
+				"label": permission.Label,
+			}},
+		}
+
+		userPermissions = append(userPermissions, up)
+	}
+
+	return userPermissions
+}
+
+func flattenGroupsPermissions(gp []tpm.GroupPermission) []map[string]interface{} {
+	groupPermissions := []map[string]interface{}{}
+	for _, groupPermission := range gp {
+		group := groupPermission.Group
+		permission := groupPermission.Permission
+
+		up := map[string]interface{}{
+			"group": []map[string]interface{}{{
+				"id":   group.ID,
+				"name": group.Name,
+			}},
+			"permission": []map[string]interface{}{{
+				"id":    permission.ID,
+				"label": permission.Label,
+			}},
+		}
+
+		groupPermissions = append(groupPermissions, up)
+	}
+
+	return groupPermissions
 }
