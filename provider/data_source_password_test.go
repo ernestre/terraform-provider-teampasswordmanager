@@ -234,7 +234,11 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 					checkDataSourceField("updated_by.0.email_address", passwordFromRemote.UpdatedBy.Email),
 					checkDataSourceField("updated_by.0.name", passwordFromRemote.UpdatedBy.Name),
 					checkDataSourceField("updated_by.0.role", passwordFromRemote.UpdatedBy.Role),
-
+					// Tags
+					checkDataSourceField("tags.#", "2"),
+					checkDataSourceField("tags.0", "hello"),
+					checkDataSourceField("tags.1", "world"),
+					// Managed by
 					checkDataSourceField("managed_by.0.id", strconv.Itoa(passwordFromRemote.ManagedBy.ID)),
 					checkDataSourceField("managed_by.0.username", passwordFromRemote.ManagedBy.Username),
 					checkDataSourceField("managed_by.0.email_address", passwordFromRemote.ManagedBy.Email),
