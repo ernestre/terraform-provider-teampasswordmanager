@@ -1,6 +1,6 @@
 package tpm
 
-//go:generate stringer -type=ExpireStatus
+//go:generate go run golang.org/x/tools/cmd/stringer -type=ExpireStatus
 type ExpireStatus int
 
 const (
@@ -10,7 +10,7 @@ const (
 	ExpiresSoon
 )
 
-//go:generate stringer -type=LockingType
+//go:generate go run golang.org/x/tools/cmd/stringer -type=LockingType
 type LockingType int
 
 const (
@@ -19,7 +19,7 @@ const (
 	RequiresPermissionToUnlock
 )
 
-//go:generate stringer -type=LockingRequestNotify
+//go:generate go run golang.org/x/tools/cmd/stringer -type=LockingRequestNotify
 type LockingRequestNotify int
 
 const (
