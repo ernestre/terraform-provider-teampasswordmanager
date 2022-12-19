@@ -117,7 +117,7 @@ func dataSourcePassword() *schema.Resource {
 			Description: "List of project ids from the root to the project of the password (in descending order), as seen by the use.",
 		},
 		"user_permission": {
-			Type:     schema.TypeSet,
+			Type:     schema.TypeList,
 			Computed: true,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
@@ -189,7 +189,7 @@ func dataSourcePassword() *schema.Resource {
 			Description: "If the password is linked, then this will be the ID of the source password.",
 		},
 		"managed_by": {
-			Type:        schema.TypeSet,
+			Type:        schema.TypeList,
 			Computed:    true,
 			Elem:        &schema.Resource{Schema: userShema},
 			Description: "Main manager of the password.",
@@ -200,7 +200,7 @@ func dataSourcePassword() *schema.Resource {
 			Description: "Datetime when the password was created.",
 		},
 		"created_by": {
-			Type:        schema.TypeSet,
+			Type:        schema.TypeList,
 			Computed:    true,
 			Elem:        &schema.Resource{Schema: userShema},
 			Description: "User which created the password.",
@@ -211,7 +211,7 @@ func dataSourcePassword() *schema.Resource {
 			Description: "Datetime when the password was updated.",
 		},
 		"updated_by": {
-			Type:        schema.TypeSet,
+			Type:        schema.TypeList,
 			Computed:    true,
 			Elem:        &schema.Resource{Schema: userShema},
 			Description: "User which updated the password.",
@@ -222,12 +222,12 @@ func dataSourcePassword() *schema.Resource {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"user": {
-						Type:     schema.TypeSet,
+						Type:     schema.TypeList,
 						Elem:     &schema.Resource{Schema: userShema},
 						Computed: true,
 					},
 					"permission": {
-						Type:     schema.TypeSet,
+						Type:     schema.TypeList,
 						Elem:     &schema.Resource{Schema: permissionShema},
 						Computed: true,
 					},
@@ -241,7 +241,7 @@ func dataSourcePassword() *schema.Resource {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"group": {
-						Type: schema.TypeSet,
+						Type: schema.TypeList,
 						Elem: &schema.Resource{Schema: map[string]*schema.Schema{
 							"id": {
 								Type:     schema.TypeInt,
@@ -255,7 +255,7 @@ func dataSourcePassword() *schema.Resource {
 						Computed: true,
 					},
 					"permission": {
-						Type:     schema.TypeSet,
+						Type:     schema.TypeList,
 						Elem:     &schema.Resource{Schema: permissionShema},
 						Computed: true,
 					},

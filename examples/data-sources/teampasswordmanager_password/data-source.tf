@@ -30,3 +30,18 @@ data "teampasswordmanager_password" "database" {
 data "teampasswordmanager_password" "sendgrid" {
   id = teampasswordmanager_password.sendgrid.id
 }
+
+output "sendgrid" {
+  value     = data.teampasswordmanager_password.sendgrid.managed_by.0.email_address
+  sensitive = true
+}
+
+output "database_password_users_permissions_user_email" {
+  value     = data.teampasswordmanager_password.foo.users_permissions.0.user.0.email_address
+  sensitive = true
+}
+
+output "database_password_users_permissions_permission_id" {
+  value     = data.teampasswordmanager_password.foo.users_permissions.0.permission.0.id
+  sensitive = true
+}
