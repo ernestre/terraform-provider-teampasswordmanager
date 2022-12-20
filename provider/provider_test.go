@@ -29,10 +29,16 @@ func testAccPreCheck(t *testing.T) {
 	if err := os.Getenv(envConfigHost); err == "" {
 		t.Fatalf("%s must be set for acceptance tests", envConfigHost)
 	}
+
 	if err := os.Getenv(envConfigPublicKey); err == "" {
-		t.Fatalf("%s must be set for acceptance tests", configPublicKey)
+		t.Fatalf("%s must be set for acceptance tests", envConfigPublicKey)
 	}
+
 	if err := os.Getenv(envConfigPrivateKey); err == "" {
-		t.Fatalf("%s must be set for acceptance tests", configPrivateKey)
+		t.Fatalf("%s must be set for acceptance tests", envConfigPrivateKey)
+	}
+
+	if err := os.Getenv(envConfigAPIVersion); err == "" {
+		t.Fatalf("%s must be set for acceptance tests", envConfigAPIVersion)
 	}
 }

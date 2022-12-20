@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/ernestre/terraform-provider-teampasswordmanager/tpm"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -58,10 +59,10 @@ func Provider() *schema.Provider {
 				Description: "Private key from http://{ host }/index.php/user_info/api_keys",
 			},
 			configAPIVersion: {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Deprecated:  "This attribute was added only for v4 support and will be removed in the future releases. Please upgrade your TeamPasswordManager to the latest version.",
-				DefaultFunc: schema.EnvDefaultFunc(envConfigAPIVersion, tpm.DefaultApiVersion),
+				Type:       schema.TypeString,
+				Optional:   true,
+				Deprecated: "This attribute was added only for v4 support and will be removed in the future releases. Please upgrade your TeamPasswordManager to the latest version.",
+				Default:    tpm.DefaultApiVersion,
 				Description: fmt.Sprintf(
 					"Api version to use (defaults to %s). Lower versions than v4 might not work correctly or at all. For more information https://teampasswordmanager.com/docs",
 					tpm.DefaultApiVersion,
@@ -84,7 +85,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	host := d.Get(configHost).(string)
 	publicKey := d.Get(configPublicKey).(string)
 	privateKey := d.Get(configPrivateKey).(string)
-	apiVersion := d.Get(configAPIVersion).(string)
+	apiVersion := os.Getenv(envConfigAPIVersion)
+
+	if apiVersion == "" {
+		apiVersion = d.Get(configAPIVersion).(string)
+	}
 
 	if host == "" {
 		return nil, diag.Errorf("%s cannot be empty", configHost)
