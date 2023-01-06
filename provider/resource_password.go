@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"time"
 
@@ -11,92 +10,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-const customFieldCount = 10
-
 func resourcePassword() *schema.Resource {
-	passwordSchema := map[string]*schema.Schema{
-		"id": {
-			Type:        schema.TypeString,
-			Computed:    true,
-			Optional:    true,
-			Description: "Password ID.",
-		},
-		"name": {
-			Type:        schema.TypeString,
-			Required:    true,
-			Description: "Name of the password, usually used for seaching.",
-		},
-		"project_id": {
-			Type:        schema.TypeInt,
-			Required:    true,
-			Description: "Project ID of the project where password should be created.",
-		},
-		"username": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Sensitive:   true,
-			Description: "Username value.",
-		},
-		"email": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Sensitive:   true,
-			Description: "Email value.",
-		},
-		"password": {
-			Type:        schema.TypeString,
-			Required:    true,
-			Sensitive:   true,
-			Description: "Password value.",
-		},
-		"notes": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Notes are used to store additional information about the password.",
-		},
-		"access_info": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Access information. Examples: http://site, ftp://ip-address, manual login.",
-		},
-		"tags": {
-			Type: schema.TypeList,
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-			Optional:    true,
-			Description: "Tags which are usually used for search. Tags should be unique and in alphabetical order.",
-		},
-		"expiry_date": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Expiry date of the password.",
-		},
-	}
-
-	for i := 1; i <= customFieldCount; i++ {
-		passwordSchema[fmt.Sprintf("custom_field_%d", i)] = &schema.Schema{
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: fmt.Sprintf("Custom field %d", i),
-		}
-	}
-
 	return &schema.Resource{
 		Description:   "Creates a password resource for a given project.",
 		CreateContext: resourcePasswordCreate,
-		ReadContext:   resourcePasswordRead,
+		ReadContext:   dataSourcePasswordRead,
 		UpdateContext: resourcePasswordUpdate,
 		DeleteContext: resourcePasswordDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: passwordSchema,
+		Schema: newPasswordSchema(),
 	}
 }
 
 func resourcePasswordCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	c := getPasswordClient(m)
 
 	r := tpm.CreatePasswordRequest{
@@ -138,7 +66,7 @@ func resourcePasswordCreate(ctx context.Context, d *schema.ResourceData, m inter
 
 	d.SetId(strconv.Itoa(resp.ID))
 
-	return diags
+	return dataSourcePasswordRead(ctx, d, m)
 }
 
 func resourcePasswordDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -202,94 +130,5 @@ func resourcePasswordUpdate(ctx context.Context, d *schema.ResourceData, m inter
 
 	d.SetId(strconv.Itoa(passwordID))
 
-	return resourcePasswordRead(ctx, d, m)
-}
-
-func resourcePasswordRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-	c := getPasswordClient(m)
-
-	passwordID, err := strconv.Atoi(d.Get("id").(string))
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	passwordData, err := c.Get(passwordID)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	d.SetId(strconv.Itoa(passwordID))
-
-	setCustomField := func(customField *tpm.CustomField, fieldName string, resourceData *schema.ResourceData) error {
-		if customField != nil {
-			if err = resourceData.Set(fieldName, customField.Data); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	}
-
-	if err = d.Set("name", passwordData.Name); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err = d.Set("project_id", passwordData.Project.ID); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err = d.Set("password", passwordData.Password); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err = d.Set("username", passwordData.Username); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err = d.Set("email", passwordData.Email); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err = d.Set("notes", passwordData.Notes); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err = d.Set("access_info", passwordData.AccessInfo); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if len(passwordData.Tags) > 0 {
-		if err = d.Set("tags", passwordData.Tags); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	expireDate := time.Time(passwordData.ExpiryDate)
-	if !expireDate.IsZero() {
-		if err = d.Set("expiry_date", expireDate.Format(tpm.ShortDateTimeFormat)); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	customFields := map[*tpm.CustomField]string{
-		passwordData.CustomField1:  "custom_field_1",
-		passwordData.CustomField2:  "custom_field_2",
-		passwordData.CustomField3:  "custom_field_3",
-		passwordData.CustomField4:  "custom_field_4",
-		passwordData.CustomField5:  "custom_field_5",
-		passwordData.CustomField6:  "custom_field_6",
-		passwordData.CustomField7:  "custom_field_7",
-		passwordData.CustomField8:  "custom_field_8",
-		passwordData.CustomField9:  "custom_field_9",
-		passwordData.CustomField10: "custom_field_10",
-	}
-
-	for field, name := range customFields {
-		if err = setCustomField(field, name, d); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	return diags
+	return dataSourcePasswordRead(ctx, d, m)
 }

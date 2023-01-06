@@ -3,6 +3,7 @@ package provider
 import (
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"testing"
@@ -128,6 +129,101 @@ func TestAccTPMPasswordInvalidDateFormat(t *testing.T) {
                     }
                 `,
 				ExpectError: regexp.MustCompile(ErrInvalidExpiryDateFormat.Error()),
+			},
+		},
+	})
+}
+
+func TestAccTPMPasswordFields(t *testing.T) {
+	// t.Skip()
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckTPMPasswordDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+                    resource "teampasswordmanager_project" "my_project" {
+                        name = "test_project"
+                    }
+                    resource "teampasswordmanager_password" "new" {
+                        name = "new_password"
+                        project_id = teampasswordmanager_project.my_project.id
+                        password = "secure_password"
+                        expiry_date = "2022-11-26"
+
+                    }
+                `,
+				Check: func(s *terraform.State) error {
+
+					var (
+						getPasswordByName = func(name string) (tpm.PasswordData, error) {
+							config := tpm.Config{
+								Host:       os.Getenv(envConfigHost),
+								PublicKey:  os.Getenv(envConfigPublicKey),
+								PrivateKey: os.Getenv(envConfigPrivateKey),
+							}
+
+							c := tpm.NewPasswordClient(config)
+
+							passwords, err := c.Find(fmt.Sprintf("name:%s", name))
+
+							if err != nil || len(passwords) == 0 {
+								return tpm.PasswordData{}, fmt.Errorf("Could not find password by name: %s", name)
+							}
+
+							passwordID := passwords[0].ID
+
+							password, err := c.Get(passwordID)
+
+							if err != nil {
+								return tpm.PasswordData{}, fmt.Errorf("Could not find password by id: %d", passwordID)
+							}
+
+							return password, nil
+						}
+
+						resourceName = "teampasswordmanager_password.new"
+						passwordName = "new_password"
+					)
+
+					rs, ok := s.RootModule().Resources[resourceName]
+					if !ok {
+						return fmt.Errorf("resource not found: %s", resourceName)
+					}
+
+					password, err := getPasswordByName(passwordName)
+
+					if err != nil {
+						return err
+					}
+
+					fieldsToCheck := map[string]string{
+						"id":          strconv.Itoa(password.ID),
+						"name":        password.Name,
+						"project_id":  strconv.Itoa(password.Project.ID),
+						"username":    password.Username,
+						"email":       password.Email,
+						"password":    password.Password,
+						"notes":       password.Notes,
+						"expiry_date": password.ExpiryDate.String(),
+					}
+
+					for attributeName, f := range fieldsToCheck {
+						attribute, ok := rs.Primary.Attributes[attributeName]
+
+						if !ok {
+							return fmt.Errorf("attribute not found: %s", attributeName)
+						}
+
+						if attribute != f {
+							return fmt.Errorf("attribute '%s' value '%s' does not equal remote field value '%s'", attributeName, attribute, f)
+						}
+
+					}
+
+					return nil
+				},
 			},
 		},
 	})
