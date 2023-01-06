@@ -176,7 +176,7 @@ func newReadOnlyPasswordSchema() map[string]*schema.Schema {
 		"external_sharing": {
 			Type:        schema.TypeBool,
 			Computed:    true,
-			Description: "Whether the password is shared externaly.",
+			Description: "Whether the password is shared externally.",
 		},
 		"external_url": {
 			Type:        schema.TypeString,

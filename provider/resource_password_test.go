@@ -135,7 +135,6 @@ func TestAccTPMPasswordInvalidDateFormat(t *testing.T) {
 }
 
 func TestAccTPMPasswordFields(t *testing.T) {
-	// t.Skip()
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
@@ -151,7 +150,6 @@ func TestAccTPMPasswordFields(t *testing.T) {
                         project_id = teampasswordmanager_project.my_project.id
                         password = "secure_password"
                         expiry_date = "2022-11-26"
-
                     }
                 `,
 				Check: func(s *terraform.State) error {
@@ -199,14 +197,47 @@ func TestAccTPMPasswordFields(t *testing.T) {
 					}
 
 					fieldsToCheck := map[string]string{
-						"id":          strconv.Itoa(password.ID),
-						"name":        password.Name,
-						"project_id":  strconv.Itoa(password.Project.ID),
-						"username":    password.Username,
-						"email":       password.Email,
-						"password":    password.Password,
-						"notes":       password.Notes,
-						"expiry_date": password.ExpiryDate.String(),
+						"id":                         strconv.Itoa(password.ID),
+						"name":                       password.Name,
+						"project_id":                 strconv.Itoa(password.Project.ID),
+						"username":                   password.Username,
+						"email":                      password.Email,
+						"password":                   password.Password,
+						"notes":                      password.Notes,
+						"expiry_date":                password.ExpiryDate.String(),
+						"expiry_status":              strconv.Itoa(int(tpm.Expired)),
+						"user_permission.0.id":       strconv.Itoa(password.UserPermission.ID),
+						"user_permission.0.label":    password.UserPermission.Label,
+						"archived":                   "false",
+						"project_archived":           "false",
+						"favorite":                   "false",
+						"num_files":                  "0",
+						"locked":                     "false",
+						"locking_type":               strconv.Itoa(int(tpm.NotLocked)),
+						"locking_request_notify":     strconv.Itoa(int(tpm.PasswordNotLocked)),
+						"external_sharing":           "false",
+						"external_url":               "",
+						"linked":                     "false",
+						"source_password_id":         "0",
+						"managed_by.0.id":            strconv.Itoa(password.ManagedBy.ID),
+						"managed_by.0.username":      password.ManagedBy.Username,
+						"managed_by.0.email_address": password.ManagedBy.Email,
+						"managed_by.0.name":          password.ManagedBy.Name,
+						"managed_by.0.role":          password.ManagedBy.Role,
+						"created_on":                 password.CreatedOn.String(),
+						"created_by.0.id":            strconv.Itoa(password.CreatedBy.ID),
+						"created_by.0.username":      password.CreatedBy.Username,
+						"created_by.0.email_address": password.CreatedBy.Email,
+						"created_by.0.name":          password.CreatedBy.Name,
+						"created_by.0.role":          password.CreatedBy.Role,
+						"updated_on":                 password.UpdatedOn.String(),
+						"updated_by.0.id":            strconv.Itoa(password.UpdatedBy.ID),
+						"updated_by.0.username":      password.UpdatedBy.Username,
+						"updated_by.0.email_address": password.UpdatedBy.Email,
+						"updated_by.0.name":          password.UpdatedBy.Name,
+						"updated_by.0.role":          password.UpdatedBy.Role,
+						"users_permissions.#":        "0",
+						"groups_permissions.#":       "0",
 					}
 
 					for attributeName, f := range fieldsToCheck {
