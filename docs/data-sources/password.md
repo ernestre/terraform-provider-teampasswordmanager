@@ -46,19 +46,20 @@ data "teampasswordmanager_password" "sendgrid" {
   id = teampasswordmanager_password.sendgrid.id
 }
 
-output "sendgrid" {
-  value     = data.teampasswordmanager_password.sendgrid.managed_by.0.email_address
-  sensitive = true
+output "sendgrid_password_managed_by_email_address" {
+  value = data.teampasswordmanager_password.sendgrid.managed_by.0.email_address
 }
 
-output "database_password_users_permissions_user_email" {
-  value     = data.teampasswordmanager_password.foo.users_permissions.0.user.0.email_address
-  sensitive = true
+output "database_password_created_by_username" {
+  value = data.teampasswordmanager_password.database.created_by.0.username
 }
 
-output "database_password_users_permissions_permission_id" {
-  value     = data.teampasswordmanager_password.foo.users_permissions.0.permission.0.id
-  sensitive = true
+output "database_password_created_by_user_role" {
+  value = data.teampasswordmanager_password.database.created_by.0.role
+}
+
+output "database_password_created_by_user" {
+  value = data.teampasswordmanager_password.database.created_by.0
 }
 ```
 
@@ -86,7 +87,7 @@ output "database_password_users_permissions_permission_id" {
 - `custom_field_8` (String) Custom field 8
 - `custom_field_9` (String) Custom field 9
 - `email` (String, Sensitive) Email value.
-- `expiry_date` (String) Expiry date of the password.
+- `expiry_date` (String) Expiry date of the password (in ISO 8601 format: yyyy-mm-dd).
 - `expiry_status` (Number) Expiry status of the password. 0=no date or not expired, 1=expires today, 2=expired, 3=will expire soon
 - `external_sharing` (Boolean) Whether the password is shared externally.
 - `external_url` (String) External url of the password if it's shared externally.

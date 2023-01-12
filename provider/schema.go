@@ -100,7 +100,7 @@ func newReadOnlyPasswordSchema() map[string]*schema.Schema {
 		"expiry_date": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "Expiry date of the password.",
+			Description: "Expiry date of the password (in ISO 8601 format: yyyy-mm-dd).",
 		},
 		"expiry_status": {
 			Type:        schema.TypeInt,
