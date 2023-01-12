@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// TODO: Move to an internal variable
 const customFieldCount = 10
 
 func newUserSchema() map[string]*schema.Schema {
