@@ -17,6 +17,7 @@ test-v5:
 	TPM_HOST=${HOST} \
 	TPM_PUBLIC_KEY=${PUBLIC_KEY} \
 	TPM_PRIVATE_KEY=${PRIVATE_KEY} \
+	TPM_API_VERSION=v5 \
 	go test --race ./...
 
 test-unit:
