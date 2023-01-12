@@ -31,17 +31,18 @@ data "teampasswordmanager_password" "sendgrid" {
   id = teampasswordmanager_password.sendgrid.id
 }
 
-output "sendgrid" {
-  value     = data.teampasswordmanager_password.sendgrid.managed_by.0.email_address
-  sensitive = true
+output "sendgrid_password_managed_by_email_address" {
+  value = data.teampasswordmanager_password.sendgrid.managed_by.0.email_address
 }
 
-output "database_password_users_permissions_user_email" {
-  value     = data.teampasswordmanager_password.foo.users_permissions.0.user.0.email_address
-  sensitive = true
+output "database_password_created_by_username" {
+  value = data.teampasswordmanager_password.database.created_by.0.username
 }
 
-output "database_password_users_permissions_permission_id" {
-  value     = data.teampasswordmanager_password.foo.users_permissions.0.permission.0.id
-  sensitive = true
+output "database_password_created_by_user_role" {
+  value = data.teampasswordmanager_password.database.created_by.0.role
+}
+
+output "database_password_created_by_user" {
+  value = data.teampasswordmanager_password.database.created_by.0
 }
