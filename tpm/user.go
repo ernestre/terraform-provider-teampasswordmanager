@@ -2,12 +2,6 @@ package tpm
 
 type UserRole string
 
-// Admin: can do anything.
-// IT: like a project manager plus access to Users/Groups, Log and Settings.
-// Project manager: like normal users and also create/delete projects.
-// Normal user: work with passwords and projects, but not create/delete projects.
-// Read only: only read passwords on assigned projects.
-
 const (
 	// UserRoleAdmin role owners can do anything.
 	UserRoleAdmin UserRole = "admin"
