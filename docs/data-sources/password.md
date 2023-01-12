@@ -88,7 +88,7 @@ output "database_password_users_permissions_permission_id" {
 - `email` (String, Sensitive) Email value.
 - `expiry_date` (String) Expiry date of the password.
 - `expiry_status` (Number) Expiry status of the password. 0=no date or not expired, 1=expires today, 2=expired, 3=will expire soon
-- `external_sharing` (Boolean) Whether the password is shared externaly.
+- `external_sharing` (Boolean) Whether the password is shared externally.
 - `external_url` (String) External url of the password if it's shared externally.
 - `favorite` (Boolean) Whether the password is marked as favorite.
 - `groups_permissions` (List of Object) This is an array of objects of the following data: group object and permission object (permission id, description). Each object describes the permission set to the group on the password. These data are only available to users with manage permission on the password (they're set to null for users that don't have the manage permission). (see [below for nested schema](#nestedatt--groups_permissions))
