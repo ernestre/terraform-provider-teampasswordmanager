@@ -44,7 +44,7 @@ func resourceProject() *schema.Resource {
 					Type: schema.TypeString,
 				},
 				Optional:    true,
-				Description: "Project tags, usually used for search. Tags should be unique and in alphabetical order.",
+				Description: "Tags which are usually used for search. Tags should be unique and in alphabetical order.",
 			},
 			"notes": {
 				Type:        schema.TypeString,

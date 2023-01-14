@@ -25,3 +25,15 @@ resource "teampasswordmanager_password" "sendgrid" {
   custom_field_1 = "Admin user"
   custom_field_2 = "Marketing"
 }
+
+output "sendgrid_password_created_by_username" {
+  value = teampasswordmanager_password.sendgrid.created_by.0.username
+}
+
+output "sendgrid_password_created_by_user_role" {
+  value = teampasswordmanager_password.sendgrid.created_by.0.role
+}
+
+output "sendgrid_password_created_by_user" {
+  value = teampasswordmanager_password.sendgrid.created_by.0
+}

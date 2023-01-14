@@ -3,6 +3,8 @@ package provider
 import (
 	"errors"
 	"fmt"
+	"os"
+	"regexp"
 	"strconv"
 	"testing"
 
@@ -28,6 +30,10 @@ func TestAccTPMPasswordBasic(t *testing.T) {
                         password = "secure_password"
                         username = "secret_username"
                         email = "foo@bar.com"
+                        notes = "additinal information about password"
+                        access_info = "ftp://ip-address"
+                        tags = ["a","b","c"]
+                        expiry_date = "2022-11-26"
 
                         custom_field_1 = "custom data 1"
                         custom_field_2 = "custom data 2"
@@ -46,6 +52,13 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "password", "secure_password"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", "secret_username"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "email", "foo@bar.com"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", "additinal information about password"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", "ftp://ip-address"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.#", "3"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.0", "a"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.1", "b"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "tags.2", "c"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "expiry_date", "2022-11-26"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", "custom data 1"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", "custom data 2"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", "custom data 3"),
@@ -75,6 +88,11 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "password", "foobar"),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "username", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "email", ""),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", ""),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "access_info", ""),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "notes", ""),
+					resource.TestCheckNoResourceAttr("teampasswordmanager_password.new", "tags.#"),
+					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "expiry_date", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_1", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_2", ""),
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_3", ""),
@@ -87,6 +105,156 @@ func TestAccTPMPasswordBasic(t *testing.T) {
 					resource.TestCheckResourceAttr("teampasswordmanager_password.new", "custom_field_10", ""),
 					testAccCheckTPMPasswordExists("teampasswordmanager_password.new", "teampasswordmanager_project.my_project"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccTPMPasswordInvalidDateFormat(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckTPMPasswordDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+                    resource "teampasswordmanager_project" "my_project" {
+                        name = "test_project"
+                    }
+                    resource "teampasswordmanager_password" "new" {
+                        name = "new_password"
+                        project_id = teampasswordmanager_project.my_project.id
+                        password = "secure_password"
+                        expiry_date = "2022-11-26 00:11:22"
+                    }
+                `,
+				ExpectError: regexp.MustCompile(ErrInvalidExpiryDateFormat.Error()),
+			},
+		},
+	})
+}
+
+func TestAccTPMPasswordFields(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testAccPreCheck(t) },
+		Providers:    testAccProviders,
+		CheckDestroy: testAccCheckTPMPasswordDestroy,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+                    resource "teampasswordmanager_project" "my_project" {
+                        name = "test_project"
+                    }
+                    resource "teampasswordmanager_password" "new" {
+                        name = "new_password"
+                        project_id = teampasswordmanager_project.my_project.id
+                        password = "secure_password"
+                        expiry_date = "2022-11-26"
+                    }
+                `,
+				Check: func(s *terraform.State) error {
+
+					var (
+						getPasswordByName = func(name string) (tpm.PasswordData, error) {
+							config := tpm.Config{
+								Host:       os.Getenv(envConfigHost),
+								PublicKey:  os.Getenv(envConfigPublicKey),
+								PrivateKey: os.Getenv(envConfigPrivateKey),
+							}
+
+							c := tpm.NewPasswordClient(config)
+
+							passwords, err := c.Find(fmt.Sprintf("name:%s", name))
+
+							if err != nil || len(passwords) == 0 {
+								return tpm.PasswordData{}, fmt.Errorf("Could not find password by name: %s", name)
+							}
+
+							passwordID := passwords[0].ID
+
+							password, err := c.Get(passwordID)
+
+							if err != nil {
+								return tpm.PasswordData{}, fmt.Errorf("Could not find password by id: %d", passwordID)
+							}
+
+							return password, nil
+						}
+
+						resourceName = "teampasswordmanager_password.new"
+						passwordName = "new_password"
+					)
+
+					rs, ok := s.RootModule().Resources[resourceName]
+					if !ok {
+						return fmt.Errorf("resource not found: %s", resourceName)
+					}
+
+					password, err := getPasswordByName(passwordName)
+
+					if err != nil {
+						return err
+					}
+
+					fieldsToCheck := map[string]string{
+						"id":                         strconv.Itoa(password.ID),
+						"name":                       password.Name,
+						"project_id":                 strconv.Itoa(password.Project.ID),
+						"username":                   password.Username,
+						"email":                      password.Email,
+						"password":                   password.Password,
+						"notes":                      password.Notes,
+						"expiry_date":                password.ExpiryDate.String(),
+						"expiry_status":              strconv.Itoa(int(tpm.Expired)),
+						"user_permission.0.id":       strconv.Itoa(password.UserPermission.ID),
+						"user_permission.0.label":    password.UserPermission.Label,
+						"archived":                   "false",
+						"project_archived":           "false",
+						"favorite":                   "false",
+						"num_files":                  "0",
+						"locked":                     "false",
+						"locking_type":               strconv.Itoa(int(tpm.NotLocked)),
+						"locking_request_notify":     strconv.Itoa(int(tpm.PasswordNotLocked)),
+						"external_sharing":           "false",
+						"external_url":               "",
+						"linked":                     "false",
+						"source_password_id":         "0",
+						"managed_by.0.id":            strconv.Itoa(password.ManagedBy.ID),
+						"managed_by.0.username":      password.ManagedBy.Username,
+						"managed_by.0.email_address": password.ManagedBy.Email,
+						"managed_by.0.name":          password.ManagedBy.Name,
+						"managed_by.0.role":          password.ManagedBy.Role,
+						"created_on":                 password.CreatedOn.String(),
+						"created_by.0.id":            strconv.Itoa(password.CreatedBy.ID),
+						"created_by.0.username":      password.CreatedBy.Username,
+						"created_by.0.email_address": password.CreatedBy.Email,
+						"created_by.0.name":          password.CreatedBy.Name,
+						"created_by.0.role":          password.CreatedBy.Role,
+						"updated_on":                 password.UpdatedOn.String(),
+						"updated_by.0.id":            strconv.Itoa(password.UpdatedBy.ID),
+						"updated_by.0.username":      password.UpdatedBy.Username,
+						"updated_by.0.email_address": password.UpdatedBy.Email,
+						"updated_by.0.name":          password.UpdatedBy.Name,
+						"updated_by.0.role":          password.UpdatedBy.Role,
+						"users_permissions.#":        "0",
+						"groups_permissions.#":       "0",
+					}
+
+					for attributeName, f := range fieldsToCheck {
+						attribute, ok := rs.Primary.Attributes[attributeName]
+
+						if !ok {
+							return fmt.Errorf("attribute not found: %s", attributeName)
+						}
+
+						if attribute != f {
+							return fmt.Errorf("attribute '%s' value '%s' does not equal remote field value '%s'", attributeName, attribute, f)
+						}
+
+					}
+
+					return nil
+				},
 			},
 		},
 	})

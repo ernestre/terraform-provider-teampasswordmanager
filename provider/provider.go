@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/ernestre/terraform-provider-teampasswordmanager/tpm"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -18,6 +19,7 @@ const (
 	envConfigHost       = "TPM_HOST"
 	envConfigPublicKey  = "TPM_PUBLIC_KEY"
 	envConfigPrivateKey = "TPM_PRIVATE_KEY"
+	envConfigAPIVersion = "TPM_API_VERSION"
 
 	clientPassword = "password_client"
 	clientProject  = "password_project"
@@ -83,7 +85,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	host := d.Get(configHost).(string)
 	publicKey := d.Get(configPublicKey).(string)
 	privateKey := d.Get(configPrivateKey).(string)
-	apiVersion := d.Get(configAPIVersion).(string)
+	apiVersion := os.Getenv(envConfigAPIVersion)
+
+	if apiVersion == "" {
+		apiVersion = d.Get(configAPIVersion).(string)
+	}
 
 	if host == "" {
 		return nil, diag.Errorf("%s cannot be empty", configHost)
