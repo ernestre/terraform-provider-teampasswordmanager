@@ -21,19 +21,10 @@ const (
 	envConfigPrivateKey = "TPM_PRIVATE_KEY"
 	envConfigAPIVersion = "TPM_API_VERSION"
 
-	clientPassword = "password_client"
-	clientProject  = "password_project"
+	clientPassword = "client_password"
+	clientProject  = "client_project"
+	clientGroup    = "client_group"
 )
-
-type clientRegistry map[string]interface{}
-
-func getProjectClient(m interface{}) tpm.ProjectClient {
-	return m.(clientRegistry)[clientProject].(tpm.ProjectClient)
-}
-
-func getPasswordClient(m interface{}) tpm.PasswordClient {
-	return m.(clientRegistry)[clientPassword].(tpm.PasswordClient)
-}
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -72,6 +63,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"teampasswordmanager_password": resourcePassword(),
 			"teampasswordmanager_project":  resourceProject(),
+			"teampasswordmanager_group":    resourceGroup(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"teampasswordmanager_password": dataSourcePassword(),
@@ -119,6 +111,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	clients := clientRegistry{}
 	clients[clientPassword] = tpm.NewPasswordClient(config)
 	clients[clientProject] = tpm.NewProjectClient(config)
+	clients[clientGroup] = tpm.NewGroupClient(config)
 
 	return clients, diags
 }
