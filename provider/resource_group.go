@@ -20,45 +20,7 @@ func resourceGroup() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"id": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "Project ID.",
-			},
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Name of the group.",
-			},
-			"is_ldap": {
-				Type:        schema.TypeBool,
-				Computed:    true,
-				Description: "Whether the group is a LDAP group.",
-			},
-			"ldap_server_id": {
-				Type:        schema.TypeInt,
-				Computed:    true,
-				Description: "LDAP server id",
-			},
-			"group_dn": {
-				Type:        schema.TypeString,
-				Computed:    true,
-				Description: "LDAP group's distinguished name (DN)",
-			},
-			"users": {
-				Type: schema.TypeList,
-				Elem: &schema.Resource{
-					Schema: newUserSchema(),
-				},
-				Computed:    true,
-				Description: "Users of the group.",
-			},
-			"created_on": newCreatedOnSchema(),
-			"created_by": newCreatedBySchema(),
-			"updated_on": newUpdatedOnSchema(),
-			"updated_by": newUpdatedBySchema(),
-		},
+		Schema: newResourceGroupSchema(),
 	}
 }
 
