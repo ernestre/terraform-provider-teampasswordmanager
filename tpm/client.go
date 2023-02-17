@@ -56,10 +56,38 @@ func (c Client) sendRequest(r *http.Request) (*http.Response, error) {
 	return c.httpClient.Do(r)
 }
 
+func (c Client) UpdateResource(endpoint string, requestBody any) error {
+	body, err := json.Marshal(requestBody)
+	if err != nil {
+		return fmt.Errorf("failed to marshal project body: %w", err)
+	}
+
+	req, err := http.NewRequest(http.MethodPut, c.generateURL(endpoint), bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("failed to marshal create user request body: %w", err)
+	}
+
+	resp, err := c.sendRequest(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+
+	if resp.StatusCode == http.StatusNoContent {
+		return nil
+	}
+
+	apiError, err := errorResponseToApiError(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to parse api error: %w", err)
+	}
+
+	return fmt.Errorf("failed to update resource: %w", apiError)
+}
+
 func (c Client) CreateResource(
 	endpoint string,
-	requestBody interface{},
-	response interface{},
+	requestBody any,
+	response any,
 ) error {
 	body, err := json.Marshal(requestBody)
 	if err != nil {
@@ -95,7 +123,7 @@ func (c Client) CreateResource(
 	return fmt.Errorf("failed to create group: %w", apiError)
 }
 
-func (c Client) GetResource(endpoint string, response interface{}) error {
+func (c Client) GetResource(endpoint string, response any) error {
 	req, err := http.NewRequest(http.MethodGet, c.generateURL(endpoint), nil)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)

@@ -3,12 +3,12 @@
 page_title: "teampasswordmanager_group Resource - terraform-provider-teampasswordmanager"
 subcategory: ""
 description: |-
-  Creates a group.
+  Creates a group. https://teampasswordmanager.com/docs/api-groups/
 ---
 
 # teampasswordmanager_group (Resource)
 
-Creates a group.
+Creates a group. https://teampasswordmanager.com/docs/api-groups/
 
 
 
@@ -19,16 +19,14 @@ Creates a group.
 
 - `name` (String) Name of the group.
 
-### Optional
-
-- `id` (String) Project ID.
-
 ### Read-Only
 
 - `created_by` (List of Object) User which created the password. (see [below for nested schema](#nestedatt--created_by))
 - `created_on` (String) Datetime when the password was created.
-- `is_ldap` (Boolean) Whether the group is a ldap group.
-- `num_users` (Number) Number of users in a group.
+- `group_dn` (String) LDAP group's distinguished name (DN)
+- `id` (String) Project ID.
+- `is_ldap` (Boolean) Whether the group is a LDAP group.
+- `ldap_server_id` (Number) LDAP server id
 - `updated_by` (List of Object) User which updated the password. (see [below for nested schema](#nestedatt--updated_by))
 - `updated_on` (String) Datetime when the password was updated.
 - `users` (List of Object) Users of the group. (see [below for nested schema](#nestedatt--users))

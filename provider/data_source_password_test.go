@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"testing"
 	"time"
@@ -81,20 +80,14 @@ func TestAccTPMDataSourcePassword(t *testing.T) {
 }
 
 func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
-	config := tpm.Config{
-		Host:       os.Getenv(envConfigHost),
-		PublicKey:  os.Getenv(envConfigPublicKey),
-		PrivateKey: os.Getenv(envConfigPrivateKey),
-	}
-	projectClient := tpm.NewProjectClient(config)
-	passwordClient := tpm.NewPasswordClient(config)
-	userClient := tpm.NewUserClient(config)
-	groupClient := tpm.NewGroupClient(config)
+	projectClient := newTestProjectClient()
+	passwordClient := newTestPasswordClient()
+	userClient := newTestUserClient()
+	groupClient := newTestGroupClient()
 
 	project, err := projectClient.Create(tpm.CreateProjectRequest{
 		Name: "foo_proj",
 	})
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +101,6 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 		Role:         tpm.UserRoleProjectManager,
 		Password:     "jahsah4bei0F",
 	})
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +110,6 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 	group, err := groupClient.Create(tpm.CreateGroupRequest{
 		Name: "test-group",
 	})
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -142,7 +133,6 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 	}
 
 	password, err := passwordClient.Create(req)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -166,7 +156,6 @@ func TestAccTPMDataSourcePasswordAddionalFields(t *testing.T) {
 	}
 
 	passwordFromRemote, err := passwordClient.Get(password.ID)
-
 	if err != nil {
 		t.Fatal(err)
 	}
