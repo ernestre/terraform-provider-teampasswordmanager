@@ -21,14 +21,14 @@ Creates a group. https://teampasswordmanager.com/docs/api-groups/
 
 ### Read-Only
 
-- `created_by` (List of Object) User which created the password. (see [below for nested schema](#nestedatt--created_by))
-- `created_on` (String) Datetime when the password was created.
+- `created_by` (List of Object) User which created the resource. (see [below for nested schema](#nestedatt--created_by))
+- `created_on` (String) Date when the resource was created.
 - `group_dn` (String) LDAP group's distinguished name (DN)
 - `id` (String) Project ID.
 - `is_ldap` (Boolean) Whether the group is a LDAP group.
 - `ldap_server_id` (Number) LDAP server id
-- `updated_by` (List of Object) User which updated the password. (see [below for nested schema](#nestedatt--updated_by))
-- `updated_on` (String) Datetime when the password was updated.
+- `updated_by` (List of Object) User which updated the resource. (see [below for nested schema](#nestedatt--updated_by))
+- `updated_on` (String) Date when resource was updated.
 - `users` (List of Object) Users of the group. (see [below for nested schema](#nestedatt--users))
 
 <a id="nestedatt--created_by"></a>

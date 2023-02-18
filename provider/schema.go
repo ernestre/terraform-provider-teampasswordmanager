@@ -348,7 +348,7 @@ func newCreatedOnSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:        schema.TypeString,
 		Computed:    true,
-		Description: "Datetime when the password was created.",
+		Description: "Date when the resource was created.",
 	}
 }
 
@@ -359,7 +359,7 @@ func newCreatedBySchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: newUserSchema(),
 		},
-		Description: "User which created the password.",
+		Description: "User which created the resource.",
 	}
 }
 
@@ -367,7 +367,7 @@ func newUpdatedOnSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:        schema.TypeString,
 		Computed:    true,
-		Description: "Datetime when the password was updated.",
+		Description: "Date when resource was updated.",
 	}
 }
 
@@ -378,6 +378,6 @@ func newUpdatedBySchema() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: newUserSchema(),
 		},
-		Description: "User which updated the password.",
+		Description: "User which updated the resource.",
 	}
 }

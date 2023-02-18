@@ -86,8 +86,8 @@ output "sendgrid_password_created_by_user" {
 ### Read-Only
 
 - `archived` (Boolean) Whether the password is archived and/or the project is archived.
-- `created_by` (List of Object) User which created the password. (see [below for nested schema](#nestedatt--created_by))
-- `created_on` (String) Datetime when the password was created.
+- `created_by` (List of Object) User which created the resource. (see [below for nested schema](#nestedatt--created_by))
+- `created_on` (String) Date when the resource was created.
 - `expiry_status` (Number) Expiry status of the password. 0=no date or not expired, 1=expires today, 2=expired, 3=will expire soon
 - `external_sharing` (Boolean) Whether the password is shared externally.
 - `external_url` (String) External url of the password if it's shared externally.
@@ -102,8 +102,8 @@ output "sendgrid_password_created_by_user" {
 - `parents` (List of Number) List of project ids from the root to the project of the password (in descending order), as seen by the use.
 - `project_archived` (Boolean) Whether the project is archived.
 - `source_password_id` (Number) If the password is linked, then this will be the ID of the source password.
-- `updated_by` (List of Object) User which updated the password. (see [below for nested schema](#nestedatt--updated_by))
-- `updated_on` (String) Datetime when the password was updated.
+- `updated_by` (List of Object) User which updated the resource. (see [below for nested schema](#nestedatt--updated_by))
+- `updated_on` (String) Date when resource was updated.
 - `user_permission` (List of Object) Permission object (permission id, description) that indicates what permission has the user making the request on the password. (see [below for nested schema](#nestedatt--user_permission))
 - `users_permissions` (List of Object) This is an array of objects of the following data: user object and permission object (permission id, description). Each object describes the permission set to the user on the password. These data are only available to users with manage permission on the password (they're set to null for users that don't have the manage permission). (see [below for nested schema](#nestedatt--users_permissions))
 
