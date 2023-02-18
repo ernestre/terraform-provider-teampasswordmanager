@@ -17,7 +17,7 @@ Retrieve group information.
 
 ### Required
 
-- `id` (String) Project ID.
+- `id` (String) Group ID.
 
 ### Read-Only
 

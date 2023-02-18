@@ -24,7 +24,7 @@ Creates a group. https://teampasswordmanager.com/docs/api-groups/
 - `created_by` (List of Object) User which created the resource. (see [below for nested schema](#nestedatt--created_by))
 - `created_on` (String) Date when the resource was created.
 - `group_dn` (String) LDAP group's distinguished name (DN)
-- `id` (String) Project ID.
+- `id` (String) Group ID.
 - `is_ldap` (Boolean) Whether the group is a LDAP group.
 - `ldap_server_id` (Number) LDAP server id
 - `updated_by` (List of Object) User which updated the resource. (see [below for nested schema](#nestedatt--updated_by))

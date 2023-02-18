@@ -7,7 +7,7 @@ func newResourceGroupSchema() map[string]*schema.Schema {
 		"id": {
 			Type:        schema.TypeString,
 			Computed:    true,
-			Description: "Project ID.",
+			Description: "Group ID.",
 		},
 		"name": {
 			Type:        schema.TypeString,
