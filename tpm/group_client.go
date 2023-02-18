@@ -1,10 +1,7 @@
 package tpm
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"net/http"
 )
 
 type GroupClient struct {
@@ -21,71 +18,50 @@ func (c GroupClient) getCreateGroupEndpoint() string {
 	return fmt.Sprintf("api/%s/groups.json", c.client.config.ApiVersion)
 }
 
-func (c GroupClient) getDeleteGroupEndpoint(ID int) string {
+func (c GroupClient) getGroupByIdEndpoint(ID int) string {
 	return fmt.Sprintf("api/%s/groups/%d.json", c.client.config.ApiVersion, ID)
 }
 
-func (c GroupClient) generateURL(p string) string {
-	return fmt.Sprintf("%s/index.php/%s", c.client.config.Host, p)
-}
-
-func (c GroupClient) Create(r CreateGroupRequest) (CreateGroupResponse, error) {
-	result := CreateGroupResponse{}
-
-	body, err := json.Marshal(r)
-	if err != nil {
-		return result, fmt.Errorf("failed to marshal create user request body: %w", err)
-	}
-
+func (c GroupClient) Create(request CreateGroupRequest) (CreateGroupResponse, error) {
+	response := CreateGroupResponse{}
 	endpoint := c.getCreateGroupEndpoint()
 
-	req, err := http.NewRequest(http.MethodPost, c.generateURL(endpoint), bytes.NewReader(body))
+	err := c.client.CreateResource(endpoint, request, &response)
 	if err != nil {
-		return result, err
+		return response, fmt.Errorf("failed to create group: %w", err)
 	}
+	return response, nil
+}
 
-	resp, err := c.client.sendRequest(req)
+func (c GroupClient) Update(ID int, request UpdateGroupRequest) error {
+	endpoint := c.getGroupByIdEndpoint(ID)
+
+	err := c.client.UpdateResource(endpoint, request)
 	if err != nil {
-		return result, err
+		return fmt.Errorf("failed to update group: %w", err)
 	}
+	return nil
+}
 
-	decoder := json.NewDecoder(resp.Body)
+func (c GroupClient) Get(ID int) (GetGroupResponse, error) {
+	var result GetGroupResponse
+	endpoint := c.getGroupByIdEndpoint(ID)
 
-	if resp.StatusCode == http.StatusCreated {
-		err = decoder.Decode(&result)
-
-		return result, err
-	}
-
-	apiError, err := errorResponseToApiError(resp.Body)
+	err := c.client.GetResource(endpoint, &result)
 	if err != nil {
-		return result, fmt.Errorf("failed to parse api error: %w", err)
+		return result, fmt.Errorf("failed to get group resource: %w", err)
 	}
 
-	return result, fmt.Errorf("failed to create group: %w", apiError)
+	return result, nil
 }
 
 func (c GroupClient) Delete(ID int) error {
-	endpoint := c.getDeleteGroupEndpoint(ID)
+	endpoint := c.getGroupByIdEndpoint(ID)
 
-	req, err := http.NewRequest(http.MethodDelete, c.generateURL(endpoint), nil)
+	err := c.client.DeleteResource(endpoint)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete group: %w", err)
 	}
 
-	resp, err := c.client.sendRequest(req)
-	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode == http.StatusNoContent {
-		return nil
-	}
-
-	apiError, err := errorResponseToApiError(resp.Body)
-	if err != nil {
-		return fmt.Errorf("failed to parse api error: %w", err)
-	}
-
-	return fmt.Errorf("failed to delete group: %w", apiError)
+	return nil
 }

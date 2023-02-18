@@ -43,6 +43,10 @@ func NewClient(c Config) Client {
 	}
 }
 
+func (c Client) generateURL(p string) string {
+	return fmt.Sprintf("%s/index.php/%s", c.config.Host, p)
+}
+
 func (c Client) sendRequest(r *http.Request) (*http.Response, error) {
 	err := addRequiredHeaders(c.config, r)
 	if err != nil {
@@ -50,6 +54,130 @@ func (c Client) sendRequest(r *http.Request) (*http.Response, error) {
 	}
 
 	return c.httpClient.Do(r)
+}
+
+func (c Client) UpdateResource(endpoint string, requestBody any) error {
+	body, err := json.Marshal(requestBody)
+	if err != nil {
+		return fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	req, err := http.NewRequest(http.MethodPut, c.generateURL(endpoint), bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("failed to marshal create request body: %w", err)
+	}
+
+	resp, err := c.sendRequest(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+
+	if resp.StatusCode == http.StatusNoContent {
+		return nil
+	}
+
+	apiError, err := errorResponseToApiError(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to parse api error: %w", err)
+	}
+
+	return fmt.Errorf("failed to update resource: %w", apiError)
+}
+
+func (c Client) CreateResource(
+	endpoint string,
+	requestBody any,
+	response any,
+) error {
+	body, err := json.Marshal(requestBody)
+	if err != nil {
+		return fmt.Errorf("failed to marshal request body: %w", err)
+	}
+
+	req, err := http.NewRequest(http.MethodPost, c.generateURL(endpoint), bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+
+	resp, err := c.sendRequest(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+
+	decoder := json.NewDecoder(resp.Body)
+
+	if resp.StatusCode == http.StatusCreated {
+		err = decoder.Decode(&response)
+		if err != nil {
+			return fmt.Errorf("failed to decode response: %w", err)
+		}
+
+		return nil
+	}
+
+	apiError, err := errorResponseToApiError(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to parse api error: %w", err)
+	}
+
+	return fmt.Errorf("failed to create group: %w", apiError)
+}
+
+func (c Client) GetResource(endpoint string, response any) error {
+	req, err := http.NewRequest(http.MethodGet, c.generateURL(endpoint), nil)
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+
+	resp, err := c.sendRequest(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+
+	if resp.StatusCode == http.StatusNotFound {
+		return ErrProjectNotFound
+	}
+
+	if resp.StatusCode == http.StatusOK {
+		decoder := json.NewDecoder(resp.Body)
+		err = decoder.Decode(&response)
+
+		if err != nil {
+			return fmt.Errorf("failed to decode response: %w", err)
+		}
+
+		return nil
+	}
+
+	apiError, err := errorResponseToApiError(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to parse api error: %w", err)
+	}
+
+	return fmt.Errorf("failed to retrieve resource: %w", apiError)
+}
+
+func (c Client) DeleteResource(endpoint string) error {
+	req, err := http.NewRequest(http.MethodDelete, c.generateURL(endpoint), nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := c.sendRequest(req)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode == http.StatusNoContent {
+		return nil
+	}
+
+	apiError, err := errorResponseToApiError(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to parse api error: %w", err)
+	}
+
+	return fmt.Errorf("failed to delete resource: %w", apiError)
 }
 
 func trimEndpoint(requestURI string) string {

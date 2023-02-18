@@ -198,28 +198,10 @@ func newReadOnlyPasswordSchema() map[string]*schema.Schema {
 			Elem:        &schema.Resource{Schema: userSchema},
 			Description: "Main manager of the password.",
 		},
-		"created_on": {
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "Datetime when the password was created.",
-		},
-		"created_by": {
-			Type:        schema.TypeList,
-			Computed:    true,
-			Elem:        &schema.Resource{Schema: userSchema},
-			Description: "User which created the password.",
-		},
-		"updated_on": {
-			Type:        schema.TypeString,
-			Computed:    true,
-			Description: "Datetime when the password was updated.",
-		},
-		"updated_by": {
-			Type:        schema.TypeList,
-			Computed:    true,
-			Elem:        &schema.Resource{Schema: userSchema},
-			Description: "User which updated the password.",
-		},
+		"created_on": newCreatedOnSchema(),
+		"created_by": newCreatedBySchema(),
+		"updated_on": newUpdatedOnSchema(),
+		"updated_by": newUpdatedBySchema(),
 		"users_permissions": {
 			Type:     schema.TypeList,
 			Computed: true,
@@ -360,4 +342,42 @@ func newPasswordSchema() map[string]*schema.Schema {
 	}
 
 	return passwordSchema
+}
+
+func newCreatedOnSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeString,
+		Computed:    true,
+		Description: "Date when the resource was created.",
+	}
+}
+
+func newCreatedBySchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Computed: true,
+		Elem: &schema.Resource{
+			Schema: newUserSchema(),
+		},
+		Description: "User which created the resource.",
+	}
+}
+
+func newUpdatedOnSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:        schema.TypeString,
+		Computed:    true,
+		Description: "Date when resource was updated.",
+	}
+}
+
+func newUpdatedBySchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		Computed: true,
+		Elem: &schema.Resource{
+			Schema: newUserSchema(),
+		},
+		Description: "User which updated the resource.",
+	}
 }

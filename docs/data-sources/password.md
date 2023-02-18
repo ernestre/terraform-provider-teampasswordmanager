@@ -74,8 +74,8 @@ output "database_password_created_by_user" {
 
 - `access_info` (String) Access information. Examples: http://site, ftp://ip-address, manual login.
 - `archived` (Boolean) Whether the password is archived and/or the project is archived.
-- `created_by` (List of Object) User which created the password. (see [below for nested schema](#nestedatt--created_by))
-- `created_on` (String) Datetime when the password was created.
+- `created_by` (List of Object) User which created the resource. (see [below for nested schema](#nestedatt--created_by))
+- `created_on` (String) Date when the resource was created.
 - `custom_field_1` (String) Custom field 1
 - `custom_field_10` (String) Custom field 10
 - `custom_field_2` (String) Custom field 2
@@ -107,8 +107,8 @@ output "database_password_created_by_user" {
 - `project_id` (Number) Project ID of the project where password should be created.
 - `source_password_id` (Number) If the password is linked, then this will be the ID of the source password.
 - `tags` (List of String) Tags which are usually used for search. Tags should be unique and in alphabetical order.
-- `updated_by` (List of Object) User which updated the password. (see [below for nested schema](#nestedatt--updated_by))
-- `updated_on` (String) Datetime when the password was updated.
+- `updated_by` (List of Object) User which updated the resource. (see [below for nested schema](#nestedatt--updated_by))
+- `updated_on` (String) Date when resource was updated.
 - `user_permission` (List of Object) Permission object (permission id, description) that indicates what permission has the user making the request on the password. (see [below for nested schema](#nestedatt--user_permission))
 - `username` (String, Sensitive) Username value.
 - `users_permissions` (List of Object) This is an array of objects of the following data: user object and permission object (permission id, description). Each object describes the permission set to the user on the password. These data are only available to users with manage permission on the password (they're set to null for users that don't have the manage permission). (see [below for nested schema](#nestedatt--users_permissions))

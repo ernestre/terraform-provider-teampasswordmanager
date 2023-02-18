@@ -3,7 +3,6 @@ package provider
 import (
 	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"testing"
@@ -153,16 +152,9 @@ func TestAccTPMPasswordFields(t *testing.T) {
                     }
                 `,
 				Check: func(s *terraform.State) error {
-
 					var (
 						getPasswordByName = func(name string) (tpm.PasswordData, error) {
-							config := tpm.Config{
-								Host:       os.Getenv(envConfigHost),
-								PublicKey:  os.Getenv(envConfigPublicKey),
-								PrivateKey: os.Getenv(envConfigPrivateKey),
-							}
-
-							c := tpm.NewPasswordClient(config)
+							c := newTestPasswordClient()
 
 							passwords, err := c.Find(fmt.Sprintf("name:%s", name))
 
@@ -173,7 +165,6 @@ func TestAccTPMPasswordFields(t *testing.T) {
 							passwordID := passwords[0].ID
 
 							password, err := c.Get(passwordID)
-
 							if err != nil {
 								return tpm.PasswordData{}, fmt.Errorf("Could not find password by id: %d", passwordID)
 							}
@@ -191,7 +182,6 @@ func TestAccTPMPasswordFields(t *testing.T) {
 					}
 
 					password, err := getPasswordByName(passwordName)
-
 					if err != nil {
 						return err
 					}
