@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 
 	"github.com/ernestre/terraform-provider-teampasswordmanager/tpm"
@@ -42,8 +41,6 @@ func resourceGroupCreate(ctx context.Context, d *schema.ResourceData, m interfac
 }
 
 func resourceGroupUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	fmt.Println("update")
-
 	c := getGroupClient(m)
 
 	r := tpm.UpdateGroupRequest{
@@ -76,7 +73,6 @@ func resourceGroupDelete(ctx context.Context, d *schema.ResourceData, m interfac
 }
 
 func resourceGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	fmt.Println("read")
 	var diags diag.Diagnostics
 	c := getGroupClient(m)
 
