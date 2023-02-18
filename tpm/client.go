@@ -59,12 +59,12 @@ func (c Client) sendRequest(r *http.Request) (*http.Response, error) {
 func (c Client) UpdateResource(endpoint string, requestBody any) error {
 	body, err := json.Marshal(requestBody)
 	if err != nil {
-		return fmt.Errorf("failed to marshal project body: %w", err)
+		return fmt.Errorf("failed to marshal request body: %w", err)
 	}
 
 	req, err := http.NewRequest(http.MethodPut, c.generateURL(endpoint), bytes.NewReader(body))
 	if err != nil {
-		return fmt.Errorf("failed to marshal create user request body: %w", err)
+		return fmt.Errorf("failed to marshal create request body: %w", err)
 	}
 
 	resp, err := c.sendRequest(req)
@@ -91,7 +91,7 @@ func (c Client) CreateResource(
 ) error {
 	body, err := json.Marshal(requestBody)
 	if err != nil {
-		return fmt.Errorf("failed to marshal create user request body: %w", err)
+		return fmt.Errorf("failed to marshal request body: %w", err)
 	}
 
 	req, err := http.NewRequest(http.MethodPost, c.generateURL(endpoint), bytes.NewReader(body))
