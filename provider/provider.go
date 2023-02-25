@@ -61,9 +61,10 @@ func Provider() *schema.Provider {
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"teampasswordmanager_password": resourcePassword(),
-			"teampasswordmanager_project":  resourceProject(),
-			"teampasswordmanager_group":    resourceGroup(),
+			"teampasswordmanager_password":         resourcePassword(),
+			"teampasswordmanager_project":          resourceProject(),
+			"teampasswordmanager_group":            resourceGroup(),
+			"teampasswordmanager_group_membership": resourceGroupMembership(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"teampasswordmanager_password": dataSourcePassword(),

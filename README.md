@@ -9,7 +9,7 @@
 
 * [X] Projects
 * [X] Passwords
-* [ ] Groups
+* [X] Groups
 * [ ] Users
 * [ ] My Passwords
 * [ ] Files
