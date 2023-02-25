@@ -112,15 +112,9 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	r := tpm.UpdateProjectRequest{
-		Name: d.Get("name").(string),
-	}
-
-	if d.HasChange("tags") {
-		r.Tags = convertListToTags(d.Get("tags").([]interface{}))
-	}
-
-	if d.HasChanges("notes") {
-		r.Notes = d.Get("notes").(string)
+		Name:  d.Get("name").(string),
+		Tags:  convertListToTags(d.Get("tags").([]interface{})),
+		Notes: d.Get("notes").(string),
 	}
 
 	if err = c.Update(projectID, r); err != nil {

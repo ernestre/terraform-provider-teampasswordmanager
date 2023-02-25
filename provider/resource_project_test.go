@@ -54,6 +54,21 @@ func TestAccTPMProjectBasic(t *testing.T) {
 			{
 				Config: `
 			                 resource "teampasswordmanager_project" "new" {
+			                     name = "updated_project"
+			                     notes = "this is a smaller note"
+			                 }
+			             `,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "name", "updated_project"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "notes", "this is a smaller note"),
+					resource.TestCheckNoResourceAttr("teampasswordmanager_project.new", "tags.#"),
+					resource.TestCheckResourceAttr("teampasswordmanager_project.new", "parent_id", "0"),
+					testAccCheckTPMProjectExists("teampasswordmanager_project.new"),
+				),
+			},
+			{
+				Config: `
+			                 resource "teampasswordmanager_project" "new" {
 			                     name = "updated_project_again"
 			                 }
 			             `,
