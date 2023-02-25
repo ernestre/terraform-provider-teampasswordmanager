@@ -21,6 +21,9 @@ test-v5:
 	go test --race ./...
 
 test-unit:
+	TPM_HOST=${HOST} \
+	TPM_PUBLIC_KEY=${PUBLIC_KEY} \
+	TPM_PRIVATE_KEY=${PRIVATE_KEY} \
 	go test --race ./...
 
 build-tf:
