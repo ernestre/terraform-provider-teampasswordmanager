@@ -2,6 +2,7 @@ package tpm
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,6 +13,7 @@ import (
 )
 
 const DefaultApiVersion = "v5"
+const DefaultTLSVerify = true
 
 type (
 	Config struct {
@@ -19,6 +21,7 @@ type (
 		PublicKey  string
 		PrivateKey string
 		ApiVersion string
+		TLSVerifiy bool
 	}
 
 	Client struct {
@@ -35,9 +38,14 @@ func NewClient(c Config) Client {
 	c.Host = strings.ReplaceAll(c.Host, " ", "")
 	c.Host = strings.TrimRight(c.Host, "/")
 
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: c.TLSVerifiy},
+	}
+
 	return Client{
 		httpClient: http.Client{
-			Timeout: time.Second * 15,
+			Timeout:   time.Second * 15,
+			Transport: tr,
 		},
 		config: c,
 	}

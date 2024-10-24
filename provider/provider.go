@@ -15,6 +15,7 @@ const (
 	configPublicKey  = "public_key"
 	configPrivateKey = "private_key"
 	configAPIVersion = "api_version"
+	configTLSVerifiy = "tls_verify"
 
 	envConfigHost       = "TPM_HOST"
 	envConfigPublicKey  = "TPM_PUBLIC_KEY"
@@ -59,6 +60,12 @@ func Provider() *schema.Provider {
 					tpm.DefaultApiVersion,
 				),
 			},
+			configTLSVerifiy: {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     tpm.DefaultTLSVerify,
+				Description: "Should the TLS certificate be verified?",
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"teampasswordmanager_password":         resourcePassword(),
@@ -80,6 +87,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	publicKey := d.Get(configPublicKey).(string)
 	privateKey := d.Get(configPrivateKey).(string)
 	apiVersion := os.Getenv(envConfigAPIVersion)
+	tlsVerify := d.Get(configTLSVerifiy).(bool)
 
 	if apiVersion == "" {
 		apiVersion = d.Get(configAPIVersion).(string)
@@ -108,6 +116,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		PublicKey:  publicKey,
 		PrivateKey: privateKey,
 		ApiVersion: apiVersion,
+		TLSVerifiy: tlsVerify,
 	}
 
 	clients := clientRegistry{}
