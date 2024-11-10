@@ -34,5 +34,3 @@ resource "teampasswordmanager_group_membership" "new_group_user" {
 ### Read-Only
 
 - `id` (String) Group ID.
-
-

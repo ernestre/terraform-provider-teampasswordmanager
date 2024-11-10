@@ -49,5 +49,3 @@ data "teampasswordmanager_project" "child" {
 - `notes` (String) Notes are used to store additional information about the project.
 - `parent_id` (Number) Parent project ID. If the project is a 'root' project then the value should be 0, otherwise set the id of the parent project.
 - `tags` (List of String) Project tags, usually used for search. Tags should be unique and in alphabetical order.
-
-

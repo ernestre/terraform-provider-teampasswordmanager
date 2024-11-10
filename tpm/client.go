@@ -2,6 +2,7 @@ package tpm
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,7 +12,10 @@ import (
 	"time"
 )
 
-const DefaultApiVersion = "v5"
+const (
+	DefaultApiVersion    = "v5"
+	DefaultTLSSkipVerify = false
+)
 
 type (
 	Config struct {
@@ -19,6 +23,11 @@ type (
 		PublicKey  string
 		PrivateKey string
 		ApiVersion string
+		TLSConfig  TLSConfig
+	}
+
+	TLSConfig struct {
+		SkipVerify bool
 	}
 
 	Client struct {
@@ -35,9 +44,14 @@ func NewClient(c Config) Client {
 	c.Host = strings.ReplaceAll(c.Host, " ", "")
 	c.Host = strings.TrimRight(c.Host, "/")
 
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: c.TLSConfig.SkipVerify},
+	}
+
 	return Client{
 		httpClient: http.Client{
-			Timeout: time.Second * 15,
+			Timeout:   time.Second * 15,
+			Transport: tr,
 		},
 		config: c,
 	}
@@ -141,7 +155,6 @@ func (c Client) GetResource(endpoint string, response any) error {
 	if resp.StatusCode == http.StatusOK {
 		decoder := json.NewDecoder(resp.Body)
 		err = decoder.Decode(&response)
-
 		if err != nil {
 			return fmt.Errorf("failed to decode response: %w", err)
 		}

@@ -1,6 +1,28 @@
-version: '3'
-
 services:
+
+  traefik:
+    image: "traefik:v3.2"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--accesslog=true"
+      - "--entryPoints.web.address=:80"
+      # TLS
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=postmaster@example.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "letsencrypt_volume:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+     - tpm_network
 
   teampasswordmanager:
     image: teampasswordmanager/teampasswordmanager:latest
@@ -22,6 +44,11 @@ services:
       - TPM_CONFIG_PASSWORD=tpm_password
       - TPM_CONFIG_DATABASE=tpm_database
       - TPM_UPGRADE=0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.teampasswordmanager.rule=Host(`teampasswordmanager.localhost`)"
+      - "traefik.http.routers.teampasswordmanager.entrypoints=websecure"
+      - "traefik.http.routers.teampasswordmanager.tls.certresolver=myresolver"
 
   mysql:
     image: mysql:5.7
@@ -45,4 +72,6 @@ volumes:
   tpm_mysqldata:
     driver: "local"
   tpm_volume:
+    driver: "local"
+  letsencrypt_volume:
     driver: "local"

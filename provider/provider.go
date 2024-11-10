@@ -11,15 +11,17 @@ import (
 )
 
 const (
-	configHost       = "host"
-	configPublicKey  = "public_key"
-	configPrivateKey = "private_key"
-	configAPIVersion = "api_version"
+	configHost          = "host"
+	configPublicKey     = "public_key"
+	configPrivateKey    = "private_key"
+	configAPIVersion    = "api_version"
+	configTLSSkipVerify = "tls_skip_verify"
 
-	envConfigHost       = "TPM_HOST"
-	envConfigPublicKey  = "TPM_PUBLIC_KEY"
-	envConfigPrivateKey = "TPM_PRIVATE_KEY"
-	envConfigAPIVersion = "TPM_API_VERSION"
+	envConfigHost          = "TPM_HOST"
+	envConfigPublicKey     = "TPM_PUBLIC_KEY"
+	envConfigPrivateKey    = "TPM_PRIVATE_KEY"
+	envConfigAPIVersion    = "TPM_API_VERSION"
+	envConfigTLSSkipVerify = "TPM_TLS_SKIP_VERIFY"
 
 	clientPassword = "client_password"
 	clientProject  = "client_project"
@@ -59,6 +61,15 @@ func Provider() *schema.Provider {
 					tpm.DefaultApiVersion,
 				),
 			},
+			configTLSSkipVerify: {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc(envConfigTLSSkipVerify, tpm.DefaultTLSSkipVerify),
+				Description: fmt.Sprintf(
+					"Whether the TLS certificate should be verified (defaults to %t).",
+					tpm.DefaultTLSSkipVerify,
+				),
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"teampasswordmanager_password":         resourcePassword(),
@@ -80,6 +91,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	publicKey := d.Get(configPublicKey).(string)
 	privateKey := d.Get(configPrivateKey).(string)
 	apiVersion := os.Getenv(envConfigAPIVersion)
+	tlsSkipVerify := d.Get(configTLSSkipVerify).(bool)
 
 	if apiVersion == "" {
 		apiVersion = d.Get(configAPIVersion).(string)
@@ -108,6 +120,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		PublicKey:  publicKey,
 		PrivateKey: privateKey,
 		ApiVersion: apiVersion,
+		TLSConfig: tpm.TLSConfig{
+			SkipVerify: tlsSkipVerify,
+		},
 	}
 
 	clients := clientRegistry{}

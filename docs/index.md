@@ -21,6 +21,9 @@ provider "teampasswordmanager" {
   // optional, default version is v5
   api_version = "v5" // "v4"
 
+  // optional, skip TLS certificate verification?
+  tls_skip_verify = false
+
   # Or you can provide these values via env variables: TPM_HOST, TPM_PUBLIC_KEY, TPM_PRIVATE_KEY and TPM_API_VERSION
 }
 ```
@@ -37,3 +40,4 @@ provider "teampasswordmanager" {
 ### Optional
 
 - `api_version` (String, Deprecated) Api version to use (defaults to v5). Lower versions than v4 might not work correctly or at all. For more information https://teampasswordmanager.com/docs
+- `tls_skip_verify` (Boolean) Whether the TLS certificate should be verified (defaults to false).
