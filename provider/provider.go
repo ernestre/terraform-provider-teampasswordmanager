@@ -66,7 +66,7 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc(envConfigTLSSkipVerify, tpm.DefaultTLSSkipVerify),
 				Description: fmt.Sprintf(
-					"Whether the TLS certificate should be verified (defaults to %t).",
+					"Whether the TLS certificate verification should be skipped (defaults to %t).",
 					tpm.DefaultTLSSkipVerify,
 				),
 			},

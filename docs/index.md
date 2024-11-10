@@ -40,4 +40,4 @@ provider "teampasswordmanager" {
 ### Optional
 
 - `api_version` (String, Deprecated) Api version to use (defaults to v5). Lower versions than v4 might not work correctly or at all. For more information https://teampasswordmanager.com/docs
-- `tls_skip_verify` (Boolean) Whether the TLS certificate should be verified (defaults to false).
+- `tls_skip_verify` (Boolean) Whether the TLS certificate verification should be skipped (defaults to false).
