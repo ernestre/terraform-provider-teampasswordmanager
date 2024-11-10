@@ -25,6 +25,9 @@ func newTestClientConfig() tpm.Config {
 		Host:       os.Getenv(envConfigHost),
 		PublicKey:  os.Getenv(envConfigPublicKey),
 		PrivateKey: os.Getenv(envConfigPrivateKey),
+		TLSConfig: tpm.TLSConfig{
+			SkipVerify: true,
+		},
 	}
 }
 

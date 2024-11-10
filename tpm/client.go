@@ -12,8 +12,10 @@ import (
 	"time"
 )
 
-const DefaultApiVersion = "v5"
-const DefaultTLSVerify = true
+const (
+	DefaultApiVersion    = "v5"
+	DefaultTLSSkipVerify = false
+)
 
 type (
 	Config struct {
@@ -21,7 +23,11 @@ type (
 		PublicKey  string
 		PrivateKey string
 		ApiVersion string
-		TLSVerifiy bool
+		TLSConfig  TLSConfig
+	}
+
+	TLSConfig struct {
+		SkipVerify bool
 	}
 
 	Client struct {
@@ -39,7 +45,7 @@ func NewClient(c Config) Client {
 	c.Host = strings.TrimRight(c.Host, "/")
 
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: c.TLSVerifiy},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: c.TLSConfig.SkipVerify},
 	}
 
 	return Client{
@@ -149,7 +155,6 @@ func (c Client) GetResource(endpoint string, response any) error {
 	if resp.StatusCode == http.StatusOK {
 		decoder := json.NewDecoder(resp.Body)
 		err = decoder.Decode(&response)
-
 		if err != nil {
 			return fmt.Errorf("failed to decode response: %w", err)
 		}

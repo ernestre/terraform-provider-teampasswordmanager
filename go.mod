@@ -1,6 +1,6 @@
 module github.com/ernestre/terraform-provider-teampasswordmanager
 
-go 1.18
+go 1.23
 
 require (
 	github.com/hashicorp/terraform-plugin-docs v0.13.0
